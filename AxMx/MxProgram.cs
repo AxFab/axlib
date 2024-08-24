@@ -1,7 +1,21 @@
-﻿using AxMx.Models.Db;
+// This file is part of AxLib.
+// 
+// AxLib is free software: you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the Free Software 
+// Foundation, either version 3 of the License, or (at your option) any later 
+// version.
+// 
+// AxLib is distributed in the hope that it will be useful, but WITHOUT ANY 
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
+// details.
+// 
+// You should have received a copy of the GNU General Public License along 
+// with AxLib. If not, see <https://www.gnu.org/licenses/>.
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+using AxMx.Models.Db;
 using AxToolkit.Network;
 using MongoDB.Driver;
-using System.Globalization;
 using System.Net.Mail;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -44,7 +58,7 @@ namespace AxMx
             foreach (var usr in mx.Options.Users)
                 mx.Repository.NewUser(usr.Display, usr.User, usr.Domain, usr.Langs);
 
-            mx.Listen(25);
+            mx.Listen(TcpPorts.SMTP);
         }
 
         public override async Task<(bool, string)> ValidateRecipient(MailAddress recipient, long messageSize)

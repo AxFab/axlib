@@ -1,4 +1,19 @@
-﻿using System.Text.Json.Serialization;
+// This file is part of AxLib.
+// 
+// AxLib is free software: you can redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the Free Software 
+// Foundation, either version 3 of the License, or (at your option) any later 
+// version.
+// 
+// AxLib is distributed in the hope that it will be useful, but WITHOUT ANY 
+// WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS 
+// FOR A PARTICULAR PURPOSE. See the GNU General Public License for more 
+// details.
+// 
+// You should have received a copy of the GNU General Public License along 
+// with AxLib. If not, see <https://www.gnu.org/licenses/>.
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+using System.Text.Json.Serialization;
 
 namespace AxToolkit.Mathematics;
 
@@ -30,8 +45,8 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
     public SphericalCoordinate SphericalCoordinate => new SphericalCoordinate
     {
         Radius = Altitude + BodyRadius,
-        Teta = Longitude * Math.PI / 180,
-        Phi = Math.PI / 2 - (Latitude * Math.PI / 180)
+        Teta = AxMath.Degree2Radian(Longitude),
+        Phi = AxMath.HalfPI - AxMath.Degree2Radian(Latitude),
     };
 
 
@@ -49,14 +64,14 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
     public Vector UnitLocalToGlobal(Vector u)
     {
         var sph = SphericalCoordinate;
-        var az = Math.PI / 2 - Azimuth * Math.PI / 180;
-        var el = Math.PI / 2 - Elevation * Math.PI / 180;
-        var ro = Math.PI + Rolling * Math.PI / 180;
+        var az = AxMath.HalfPI - AxMath.Degree2Radian(Azimuth);
+        var el = AxMath.HalfPI - AxMath.Degree2Radian(Elevation);
+        var ro = Math.PI + AxMath.Degree2Radian(Rolling);
         var u1 = u;
         var u2 = u1.RotateX(ro);
         var u3 = u2.RotateZ(el);
         var u4 = u3.RotateX(az);
-        var u5 = u4.RotateY(sph.Phi - Math.PI / 2);
+        var u5 = u4.RotateY(sph.Phi - AxMath.HalfPI);
         var u6 = u5.RotateZ(sph.Teta);
         return u6;
     }
@@ -64,16 +79,16 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
     public Quaternion QuaternionToGlobal()
     {
         var sph = SphericalCoordinate;
-        var az = Math.PI / 2 - Azimuth * Math.PI / 180;
-        var el = Math.PI / 2 - Elevation * Math.PI / 180;
-        var ro = Math.PI + Rolling * Math.PI / 180;
+        var az = AxMath.HalfPI - AxMath.Degree2Radian(Azimuth);
+        var el = AxMath.HalfPI - AxMath.Degree2Radian(Elevation);
+        var ro = Math.PI + AxMath.Degree2Radian(Rolling);
 
         var ux = new Vector(1, 0, 0);
         var uy = new Vector(0, 1, 0);
         var uz = new Vector(0, 0, 1);
 
         return Quaternion.Concat(new Quaternion(uz, sph.Teta),
-            Quaternion.Concat(new Quaternion(uy, sph.Phi - Math.PI / 2),
+            Quaternion.Concat(new Quaternion(uy, sph.Phi - AxMath.HalfPI),
                 Quaternion.Concat(new Quaternion(ux, az),
                     Quaternion.Concat(new Quaternion(uz, el), new Quaternion(ux, ro))
                     )
@@ -83,9 +98,9 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
 
     public Vector UnitLocalToSurface(Vector u)
     {
-        var az = Math.PI / 2 - Azimuth * Math.PI / 180;
-        var el = Elevation * Math.PI / 180;
-        var ro = Rolling * Math.PI / 180;
+        var az = AxMath.HalfPI - AxMath.Degree2Radian(Azimuth);
+        var el = AxMath.Degree2Radian(Elevation);
+        var ro = AxMath.Degree2Radian(Rolling);
         var u1 = u;
         var u2 = u1.RotateX(ro);
         var u3 = u2.RotateZ(el);
@@ -102,28 +117,28 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
         geo.BodyRadius = bodyRadius;
 
         geo.Altitude = sph.Radius - bodyRadius;
-        geo.Latitude = (Math.PI / 2 - sph.Phi) * 180 / Math.PI;
-        geo.Longitude = sph.Teta * 180 / Math.PI;
-
+        geo.Latitude = AxMath.Radian2Degree(AxMath.HalfPI - sph.Phi);
+        geo.Longitude = AxMath.Radian2Degree(sph.Teta);
+        
         var u = heading.Norm
             .RotateZ(-sph.Teta)
-            .RotateY(Math.PI / 2 - sph.Phi);
+            .RotateY(AxMath.HalfPI - sph.Phi);
 
         var az = Math.Atan2(u.Y, u.Z);
         var el = Math.Atan2(u.X, new Vector(u.Y, u.Z, 0).Length);
-        geo.Azimuth = az * 180 / Math.PI;
-        geo.Elevation = el * 180 / Math.PI;
+        geo.Azimuth = AxMath.Radian2Degree(az);
+        geo.Elevation = AxMath.Radian2Degree(el);
 
         var v = above.Norm
             .RotateZ(-sph.Teta)
-            .RotateY(Math.PI / 2 - sph.Phi)
-            .RotateX(az - Math.PI / 2)
-            .RotateZ(el - Math.PI / 2);
+            .RotateY(AxMath.HalfPI - sph.Phi)
+            .RotateX(az - AxMath.HalfPI)
+            .RotateZ(el - AxMath.HalfPI);
 
-        var roll = Math.Atan2(-v.Y, v.Z) - Math.PI / 2;
+        var roll = Math.Atan2(-v.Y, v.Z) - AxMath.HalfPI;
         if (roll <= -Math.PI)
-            roll += 2 * Math.PI;
-        geo.Rolling = roll * 180 / Math.PI;
+            roll += AxMath.TwoPI;
+        geo.Rolling = AxMath.Radian2Degree(roll);
 
         if (u.Y == 0 && u.Z == 0)
         {
@@ -139,10 +154,10 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
         if (geo1.BodyRadius != geo2.BodyRadius)
             throw new Exception();
 
-        var geo1Lat = geo1.Latitude * Math.PI / 180;
-        var geo2Lat = geo2.Latitude * Math.PI / 180;
-        var geo1Long = geo1.Longitude * Math.PI / 180;
-        var geo2Long = geo2.Longitude * Math.PI / 180;
+        var geo1Lat = AxMath.Degree2Radian(geo1.Latitude);
+        var geo2Lat = AxMath.Degree2Radian(geo2.Latitude);
+        var geo1Long = AxMath.Degree2Radian(geo1.Longitude);
+        var geo2Long = AxMath.Degree2Radian(geo2.Longitude);
 
         var diffLong = geo1Long - geo2Long;
 
@@ -157,18 +172,19 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
         return Math.Atan2(a, b) * geo1.BodyRadius;
     }
 
-    public static double CompareDifference(double a, double b)
-        => Math.Log10(Math.Abs(a - b) / Math.Pow(10, Math.Log10(a + b)));
-    
-    public static bool CompareIsEqual(double a, double b)
-        => Math.Log10(Math.Abs(a - b) / Math.Pow(10, Math.Log10(a + b))) < -6.0;
-
     public bool Equals(GeoCoordinate other)
-        => CompareIsEqual(BodyRadius, other.BodyRadius) && CompareIsEqual(Altitude, other.Altitude) &&
-        CompareIsEqual(Latitude, other.Latitude) && CompareIsEqual(Longitude, other.Longitude) &&
-        (
-            (CompareIsEqual(Azimuth, other.Azimuth) && CompareIsEqual(Elevation, other.Elevation) && CompareIsEqual(Rolling, other.Rolling)) ||
-            (CompareIsEqual(Elevation, other.Elevation) && CompareIsEqual(Math.Abs(Elevation), 90) && CompareIsEqual(Azimuth + Rolling, other.Azimuth + other.Rolling))
-        );
-    // Technically: If elevation is +/- 90...  CAn't Azimuth and Rolling can be summed !?
+    {
+        var samePos = AxMath.AlmostEqual(Latitude, other.Latitude) && AxMath.AlmostEqual(Longitude, other.Longitude);
+        if (!samePos)
+            return false;
+        var sameAlt = AxMath.AlmostEqual(BodyRadius, other.BodyRadius) && AxMath.AlmostEqual(Altitude, other.Altitude);
+        if (!sameAlt)
+            return false;
+        var sameOri = AxMath.AlmostEqual(Azimuth, other.Azimuth) && AxMath.AlmostEqual(Elevation, other.Elevation) && AxMath.AlmostEqual(Rolling, other.Rolling);
+        // Technically: If elevation is +/- 90...  Can't Azimuth and Rolling be summed !?
+        if (!sameOri && AxMath.AlmostEqual(Elevation, other.Elevation) && AxMath.AlmostEqual(Math.Abs(Elevation), 90))
+            sameOri = AxMath.AlmostEqual(Azimuth + Rolling, other.Azimuth + other.Rolling);
+        return sameOri;
+    }
+    
 }

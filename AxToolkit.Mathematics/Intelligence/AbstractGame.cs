@@ -9,7 +9,8 @@ namespace AxToolkit.Mathematics.Intelligence;
 public abstract class AbstractGame
 {
     protected readonly Random _rand;
-    public AbstractGame(int seed = 0)
+    public AbstractGame() : this(0) { }
+    public AbstractGame(int seed)
     {
         _rand = new Random(seed);
     }

@@ -18,7 +18,8 @@ public class Statistics
     public double Var => Count != 0 ? SqSum / Count - (Avg * Avg) : 0;
     public double Var3 => Count != 0 ? Sq3Sum / Count - (Avg * Avg) : 0;
 
-    public void Push(double value, int count = 1)
+    public void Push(double value) => Push(value, 1);
+    public void Push(double value, int count)
     {
         if (Count == 0)
             Min = Max = value;

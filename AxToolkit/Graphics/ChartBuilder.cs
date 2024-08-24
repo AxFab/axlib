@@ -228,16 +228,18 @@ namespace AxToolkit.Graphics
             // X Grid
             foreach (var grid in _gridX)
             {
+                ctx.StrokeStyle(grid.Color, grid.Width);
+                ctx.FillStyle(grid.Color);
                 foreach (var dx in grid.Enumerate(Bounds.MinX, Bounds.MaxX, viewWidth))
                 {
                     var gx = left + (float)dx.Item2;
                     ctx.BeginPath();
                     ctx.MoveTo(gx, top + viewHeight);
                     ctx.LineTo(gx, top);
-                    ctx.Stroke(grid.Color, grid.Width);
+                    ctx.Stroke();
 
                     ctx.Text(gx, oy, dx.Item1.ToString(), TextAlignement.Center);
-                    ctx.Fill(grid.Color);
+                    ctx.Fill();
                 }
             }
 
@@ -245,21 +247,24 @@ namespace AxToolkit.Graphics
             ctx.BeginPath();
             ctx.MoveTo(left - gp, oy);
             ctx.LineTo(left + viewWidth, oy);
-            ctx.Stroke(Color.FromArgb(240, 240, 240), 1.8f);
+            ctx.StrokeStyle(Color.FromArgb(240, 240, 240), 1.8f);
+            ctx.Stroke();
 
             // Y Grid
             foreach (var grid in _gridY)
             {
+                ctx.StrokeStyle(grid.Color, grid.Width);
+                ctx.FillStyle(grid.Color);
                 foreach (var dy in grid.Enumerate(Bounds.MinY, Bounds.MaxY, viewHeight))
                 {
                     var gy = top + viewHeight - (float)dy.Item2;
                     ctx.BeginPath();
                     ctx.MoveTo(left, gy);
                     ctx.LineTo(left + viewWidth, gy);
-                    ctx.Stroke(grid.Color, grid.Width);
+                    ctx.Stroke();
 
                     ctx.Text(left - 3, gy, dy.Item1.ToString(), TextAlignement.Right | TextAlignement.Middle);
-                    ctx.Fill(grid.Color);
+                    ctx.Fill();
                 }
             }
 
@@ -267,12 +272,14 @@ namespace AxToolkit.Graphics
             ctx.BeginPath();
             ctx.MoveTo(ox, top + viewHeight + gp);
             ctx.LineTo(ox, top);
-            ctx.Stroke(Color.FromArgb(240, 240, 240), 1.8f);
+            ctx.StrokeStyle(Color.FromArgb(240, 240, 240), 1.8f);
+            ctx.Stroke();
 
             // Functions
             var viewBottom = top + viewHeight;
             foreach (var curve in _lines)
             {
+                ctx.StrokeStyle(curve.Color, curve.Tickness);
                 bool readyDraw = false;
                 var iterator = curve.Enumerator();
                 while (iterator.MoveNext())
@@ -281,7 +288,7 @@ namespace AxToolkit.Graphics
                     if (point == null || double.IsNaN(point.Value.Item1) || double.IsNaN(point.Value.Item2))
                     {
                         if (readyDraw)
-                            ctx.Stroke(curve.Color, curve.Tickness);
+                            ctx.Stroke();
                         readyDraw = false;
                         continue;
                     }
@@ -294,7 +301,7 @@ namespace AxToolkit.Graphics
                         readyDraw = true;
                     }
                 }
-                ctx.Stroke(curve.Color, curve.Tickness);
+                ctx.Stroke();
             }
         }
     }

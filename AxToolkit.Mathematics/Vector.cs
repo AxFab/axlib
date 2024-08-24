@@ -7,6 +7,8 @@ namespace AxToolkit.Mathematics;
 [JsonConverter(typeof(VectorJsonConverter))]
 public struct Vector
 {
+    public Vector() : this(0, 0, 0) { }
+    public Vector(double x, double y) : this(x, y, 0) { }
     public Vector(double x = 0, double y = 0, double z = 0)
     {
         X = x;
@@ -65,7 +67,8 @@ public struct Vector
     public static bool operator !=(Vector a, Vector b)
         => a.X != b.X || a.Y != b.Y || a.Z != b.Z;
 
-    public bool AreEquals(Vector v, double epsilon = 0.00001)
+    public bool AreEquals(Vector v) => AreEquals(v, 0.00001);
+    public bool AreEquals(Vector v, double epsilon)
     {
         var d = this - v;
         return Math.Abs(d.X) < epsilon && Math.Abs(d.Y) < epsilon && Math.Abs(d.Z) < epsilon;

@@ -41,7 +41,8 @@ namespace AxToolkit.Network
             return bytes;
         }
 
-        internal static byte[]? ReadUntil(Stream stream, string terminator, long maxLength, string equal = null)
+        internal static byte[]? ReadUntil(Stream stream, string terminator, long maxLength) => ReadUntil(stream, terminator, maxLength, null);
+        internal static byte[]? ReadUntil(Stream stream, string terminator, long maxLength, string equal)
         {
             var data = new MemoryStream();
 

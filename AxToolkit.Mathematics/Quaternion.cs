@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,7 +9,10 @@ namespace AxToolkit.Mathematics;
 [JsonConverter(typeof(QuaternionJsonConverter))]
 public struct Quaternion
 {
-    public Quaternion(double x = 0, double y = 0, double z = 0, double w = 0)
+    public Quaternion() : this(0, 0, 0, 0) { }
+    public Quaternion(double x, double y) : this(x, y, 0, 0) { }
+    public Quaternion(double x, double y, double z) : this(x, y, z, 0) { }
+    public Quaternion(double x, double y, double z, double w)
     {
         X = x;
         Y = y;
@@ -38,8 +42,8 @@ public struct Quaternion
         var q = Vector.CrossProduct(u, v) * 1 / s;
         return new Quaternion(q.X, q.Y, q.Z, 0.5 * s);
     }
-    public static Quaternion WithW(Vector v, double w = 0)
-        => new Quaternion(v.X, v.Y, v.Z, w);
+    public static Quaternion WithW(Vector v) => WithW(v, 0);
+    public static Quaternion WithW(Vector v, double w) => new Quaternion(v.X, v.Y, v.Z, w);
 
     public double Length => Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
     public double LengthSq => X * X + Y * Y + Z * Z + W * W;

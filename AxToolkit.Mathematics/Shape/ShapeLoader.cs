@@ -33,7 +33,8 @@ public class ShapeLoader
             | ((value << 8) & 0xff0000) | ((value << 24) & 0xff000000);
         return (int)b;
     }
-    public List<PolyLine> LoadShapeFile(Stream stream, int tag = 0)
+    public List<PolyLine> LoadShapeFile(Stream stream) => LoadShapeFile(stream, 0);
+    public List<PolyLine> LoadShapeFile(Stream stream, int tag)
     {
         using var file = new BinaryReader(stream);
 

@@ -17,7 +17,7 @@ namespace AxToolkit.WinForms
     {
         private readonly System.Drawing.Graphics _graphics;
         private readonly Stack<GraphicsState> _saveStack = new Stack<GraphicsState>();
-        private GraphicsPath _path;
+        private GraphicsPath? _path;
         private PointF _cursor;
         private string _fontFamily;
         private float _fontSize;
@@ -122,12 +122,6 @@ namespace AxToolkit.WinForms
             _graphics.FillPath(brush, _path);
         }
 
-        public void Fill(Color color)
-        {
-            using var brush = new SolidBrush(color);
-            _graphics.FillPath(brush, _path);
-        }
-
         public void FillStyle(Color color)
         {
             _fillColor = color;
@@ -136,12 +130,6 @@ namespace AxToolkit.WinForms
         public void Stroke()
         {
             using var pen = new Pen(_strokeColor, _strokeWidth);
-            _graphics.DrawPath(pen, _path);
-        }
-
-        public void Stroke(Color color, float width)
-        {
-            using var pen = new Pen(color, (float)width);
             _graphics.DrawPath(pen, _path);
         }
 

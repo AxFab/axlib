@@ -21,20 +21,21 @@ namespace AxToolkit.Graphics
         void QuadTo(float x1, float y1, float x, float y);
         void CurveTo(float x1, float y1, float x2, float y2, float x, float y);
 
-        void Rect(float x, float y, float width, float height, float rx = 0, float ry = 0);
+        void Rect(float x, float y, float width, float height, float rx, float ry);
+        void Rect(float x, float y, float width, float height) => Rect(x, y, width, height, 0, 0);
         void Arc(float x, float y, float radius, float start, float end);
 
 
-        void Text(float x, float y, string text, TextAlignement align = TextAlignement.Left);
+        void Text(float x, float y, string text, TextAlignement align);
+        void Text(float x, float y, string text) => Text(x, y, text, TextAlignement.Left);
         void FontStyle(string family, float size, TextVariant variant = TextVariant.None);
 
-        void StrokeStyle(Color color, float width = 1.0f);
+        void StrokeStyle(Color color, float width);
+        void StrokeStyle(Color color) => StrokeStyle(color, 1.0f);
         void FillStyle(Color color);
 
         void Stroke();
-        void Stroke(Color color, float width);
         void Fill();
-        void Fill(Color color);
 
 
         void Save();

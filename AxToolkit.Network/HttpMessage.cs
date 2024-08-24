@@ -5,6 +5,7 @@ namespace AxToolkit.Network
     public class HttpMessage
     {
         public HttpMethod Method { get; set; }
+        public string Path { get; private set; }
         public Uri Uri { get; set; }
         public int Status { get; set; }
         public string StatusMessage { get; set; }
@@ -13,7 +14,9 @@ namespace AxToolkit.Network
         public byte[] BodyContent { get; set; }
         public List<byte[]> ChunkedBody { get; private set; }
 
-        public void Send(Stream stream, Encoding? encoding = null, bool writeContent = true)
+        public void Send(Stream stream) => Send(stream, null, true);
+        public void Send(Stream stream, Encoding? encoding) => Send(stream, encoding, true);
+        public void Send(Stream stream, Encoding? encoding, bool writeContent)
         {
             if (encoding == null)
                 encoding = Encoding.UTF8;
@@ -60,10 +63,10 @@ namespace AxToolkit.Network
             return reader.ReadToEnd();
         }
 
-
-        public static HttpMessage? Read(Stream stream, bool secured = false)
+        public static HttpMessage? Read(Stream stream) => Read(stream, false);
+        
+        private static HttpMessage ParseHttpRequest(Stream stream)
         {
-            // Parse HTTP Request
             var line = NetTools.ReadLine(stream);
             if (string.IsNullOrWhiteSpace(line))
                 return null;
@@ -83,68 +86,94 @@ namespace AxToolkit.Network
                 if (top.Length != 3 || !Enum.TryParse<HttpMethod>(top[0], out var method) || method == HttpMethod.None)
                     return null;
                 request.Method = method;
+                request.Path = top[1];
             }
+            return request;
+        }
 
-            // Parse HTTP Header
+        private static bool ParseHttpHeaders(Stream stream, HttpMessage request)
+        {
             for (; ; )
             {
-                line = NetTools.ReadLine(stream);
+                var line = NetTools.ReadLine(stream);
                 if (string.IsNullOrWhiteSpace(line))
-                    break;
+                    return true;
                 int idx = line.IndexOf(':');
                 if (idx <= 0)
-                    return null;
+                    return false;
                 request.Headers[line.Substring(0, idx)] = line.Substring(idx + 1).Trim();
             }
+        }
+
+        private static bool ReadBody(Stream stream, HttpMessage request, int contentLength)
+        {
+            request.BodyContent = NetTools.ReadData(stream, contentLength);
+            if (request.BodyContent.Length < contentLength)
+            {
+
+            }
+            return true;
+        }
+        private static bool ReadChunkedBody(Stream stream, HttpMessage request)
+        {
+            request.ChunkedBody = new List<byte[]>();
+            for (; ; )
+            {
+                var line = NetTools.ReadLine(stream);
+                var len = Convert.ToInt32(line.Split(' ')[0], 16);
+                if (len == 0)
+                {
+                    for (; ; )
+                    {
+                        line = NetTools.ReadLine(stream);
+                        if (string.IsNullOrWhiteSpace(line))
+                            return true;
+                        int idx = line.IndexOf(':');
+                        if (idx <= 0)
+                            return false;
+                        // request.Headers[line.Substring(0, idx)] = line.Substring(idx + 1).Trim();
+                    }
+                }
+                request.ChunkedBody.Add(NetTools.ReadData(stream, len));
+                line = NetTools.ReadLine(stream);
+                if (line != "")
+                    return false;
+            }
+        }
+
+        public static HttpMessage? Read(Stream stream, bool secured)
+        {
+            // Parse HTTP Request
+            var request = ParseHttpRequest(stream);
+
+            // Parse HTTP Header
+            if (!ParseHttpHeaders(stream, request))
+                return null;
 
             // Read HTTP Body
             if (request.Headers.TryGetValue("Content-Length", out var lengthStr) && int.TryParse(lengthStr, out var contentLength))
             {
-                request.BodyContent = NetTools.ReadData(stream, contentLength);
-                if (request.BodyContent.Length < contentLength)
-                {
-
-                }
+                if (!ReadBody(stream, request, contentLength))
+                    return null;
             }
             else if (request.Headers.TryGetValue("Transfer-Encoding", out var bodyEnc))
             {
                 if (bodyEnc == "chunked")
                 {
-                    request.ChunkedBody = new List<byte[]>();
-                    for (; ; )
-                    {
-                        line = NetTools.ReadLine(stream);
-                        var len = Convert.ToInt32(line.Split(' ')[0], 16);
-                        if (len == 0)
-                        {
-                            for (; ; )
-                            {
-                                line = NetTools.ReadLine(stream);
-                                if (string.IsNullOrWhiteSpace(line))
-                                    break;
-                                int idx = line.IndexOf(':');
-                                if (idx <= 0)
-                                    return null;
-                                // request.Headers[line.Substring(0, idx)] = line.Substring(idx + 1).Trim();
-                            }
-                            break;
-                        }
-                        request.ChunkedBody.Add(NetTools.ReadData(stream, len));
-                        line = NetTools.ReadLine(stream);
-                        if (line != "")
-                            return null;
-                    }
+                    if (!ReadChunkedBody(stream, request))
+                        return null;
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
             }
+            
             if (request.Method != HttpMethod.None)
             {
                 var hostname = request.Headers.TryGetValue("Host", out var host) ? host : "localhost";
                 var protocol = secured ? "https" : "http";
-                request.Uri = new Uri($"{protocol}://{hostname}{top[1]}");
+                request.Uri = new Uri($"{protocol}://{hostname}{request.Path}");
             }
             return request;
         }

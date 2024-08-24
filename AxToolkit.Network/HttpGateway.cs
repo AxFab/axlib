@@ -7,17 +7,10 @@ namespace AxToolkit.Network
     public class HttpGateway : HttpServer<HttpGatewayContext>
     {
         private Dictionary<string, int> _services = new Dictionary<string, int>();
-        public HttpGateway(int maxConnection = 1000)
-            : base(maxConnection)
-        {
-        }
-        public HttpGateway(Semaphore semaphore)
-            : base(semaphore)
-        {
-        }
+        public HttpGateway(int maxConnection = 1000) : base(maxConnection) { }
+        public HttpGateway(Semaphore semaphore) : base(semaphore) { }
 
-        public void AddService(string host, int port)
-            => _services.Add(host, port);
+        public void AddService(string host, int port) => _services.Add(host, port);
 
         public override HttpMessage Handle(HttpMessage request, HttpGatewayContext session)
         {

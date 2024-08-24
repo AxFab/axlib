@@ -36,7 +36,8 @@ public class NeuralNetwork
         return sum;
     }
 
-    public static double[] RandomWeights(int size, double max = 5.0)
+    public static double[] RandomWeights(int size) => RandomWeights(size, 5.0);
+    public static double[] RandomWeights(int size, double max)
     {
         var half = max / 2;
         var rand = new Random((int)DateTime.Now.ToFileTime());
@@ -47,7 +48,8 @@ public class NeuralNetwork
         return arr;
     }
 
-    public NeuralNetwork(int[] size, double[] weights = null)
+    public NeuralNetwork(int[] size) : this(size, null) { }
+    public NeuralNetwork(int[] size, double[] weights)
     {
         if (weights == null)
             weights = RandomWeights(LinksCount(size));

@@ -12,7 +12,10 @@ public struct GeoCoordinate
     public double Elevation { get; set; }
     public double Rolling { get; set; }
 
-    public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth, bool rising = true)
+    public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth)
+        : this(bodyradius, altitude, latitude, longitude, azimuth, true) { }
+
+    public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth, bool rising)
     {
         BodyRadius = bodyradius;
         Altitude = altitude;

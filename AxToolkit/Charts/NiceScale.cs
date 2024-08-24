@@ -8,11 +8,16 @@ namespace AxToolkit.Charts
 {
     public class NiceScale
     {
+        /// <summary>Instanciates a new instance of the NiceScale class with 10 max ticks.</summary>
+        /// <param name="min">the minimum data point on the axis</param>
+        /// <param name="max">the maximum data point on the axis</param>
+        public NiceScale(decimal min, decimal max) : this(min, max, 10) { }
+
         /// <summary>Instanciates a new instance of the NiceScale class.</summary>
         /// <param name="min">the minimum data point on the axis</param>
         /// <param name="max">the maximum data point on the axis</param>
         /// <param name="maxTicks">the maximum number of tick allowed on the axis</param>
-        public NiceScale(decimal min, decimal max, int maxTicks = 10)
+        public NiceScale(decimal min, decimal max, int maxTicks)
         {
             MinPoint = min;
             MaxPoint = max;
@@ -39,12 +44,17 @@ namespace AxToolkit.Charts
             NiceMax = Math.Ceiling(MaxPoint / TickSpacing) * TickSpacing;
         }
 
+        /// <summary>Returns a "nice" number approximation equal to range and rounds the number.</summary>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        public static decimal NiceNum(decimal range) => NiceNum(range, false); 
+
         /// <summary>Returns a "nice" number approximation equal to range.
         /// Rounds the number if round = true. Take the Ceiling if round = false.</summary>
         /// <param name="range"></param>
         /// <param name="round"></param>
         /// <returns></returns>
-        public static decimal NiceNum(decimal range, bool round = false)
+        public static decimal NiceNum(decimal range, bool round)
         {
             double niceFraction; // nice, rounded fraction
             var exponent = Math.Floor(Math.Log10((double)range)); // exponent of range

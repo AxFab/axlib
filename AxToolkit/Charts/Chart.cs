@@ -584,15 +584,16 @@ namespace AxToolkit.Charts
         internal void Paint(IDrawingContext ctx)
         {
             ctx.FillStyle(Font.Color.GetValueOrDefault(Color.DarkGray));
-            ctx.StrokeStyle(Options.TicksColor, Options.TicksWidth);
             ctx.FontStyle(Font.Family, Font.Size.GetValueOrDefault(12), TextVariant.None);
             if (Positionement == Positionements.Left)
             {
+                ctx.StrokeStyle(Options.BorderColor, Options.BorderWidth);
                 ctx.BeginPath();
                 ctx.MoveTo(_chartArea.Left, _chartArea.Top);
                 ctx.LineTo(_chartArea.Left, _chartArea.Bottom);
-                ctx.Stroke(Options.BorderColor, Options.BorderWidth);
+                ctx.Stroke();
 
+                ctx.StrokeStyle(Options.TicksColor, Options.TicksWidth);
                 foreach (var tick in Ticks)
                 {
                     var px = PixelForValue(tick.Value);
@@ -605,11 +606,13 @@ namespace AxToolkit.Charts
             }
             else if (Positionement == Positionements.Right)
             {
+                ctx.StrokeStyle(Options.BorderColor, Options.BorderWidth);
                 ctx.BeginPath();
                 ctx.MoveTo(_chartArea.Right, _chartArea.Top);
                 ctx.LineTo(_chartArea.Right, _chartArea.Bottom);
-                ctx.Stroke(Options.BorderColor, Options.BorderWidth);
+                ctx.Stroke();
 
+                ctx.StrokeStyle(Options.TicksColor, Options.TicksWidth);
                 foreach (var tick in Ticks)
                 {
                     var px = PixelForValue(tick.Value);
@@ -622,11 +625,13 @@ namespace AxToolkit.Charts
             }
             else if (Positionement == Positionements.Bottom)
             {
+                ctx.StrokeStyle(Options.BorderColor, Options.BorderWidth);
                 ctx.BeginPath();
                 ctx.MoveTo(_chartArea.Left, _chartArea.Bottom);
                 ctx.LineTo(_chartArea.Right, _chartArea.Bottom);
-                ctx.Stroke(Options.BorderColor, Options.BorderWidth);
+                ctx.Stroke();
 
+                ctx.StrokeStyle(Options.TicksColor, Options.TicksWidth);
                 foreach (var tick in Ticks)
                 {
                     var px = PixelForValue(tick.Value);

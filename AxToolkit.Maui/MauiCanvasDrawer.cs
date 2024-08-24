@@ -6,9 +6,9 @@ namespace AxMaui
     // All the code in this file is included in all platforms.
     public class MauiCanvasDrawer : IDrawingContext
     {
-        private Color _fillColor;
-        private Color _strokeColor;
-        private float _strokeWidth;
+        private Color _fillColor = Colors.Black;
+        private Color _strokeColor = Colors.Black;
+        private float _strokeWidth = 1.0f;
 
         public MauiCanvasDrawer(ICanvas canvas, RectF dirtyRect)
         {
@@ -38,6 +38,13 @@ namespace AxMaui
             var path = CurrentPath();
             path.AppendRectangle((float)x, (float)y, (float)width, (float)height);
         }
+
+        public void Text(float x, float y, string text)
+        {
+            Canvas.FontColor = _fillColor;
+            Canvas.DrawString(text, (float)x, (float)y, HorizontalAlignment.Left);
+        }
+
         public void Text(float x, float y, string text, TextAlignement align = TextAlignement.Left)
         {
             Canvas.FontColor = _fillColor;
@@ -117,14 +124,6 @@ namespace AxMaui
             Canvas.FillPath(path);
         }
 
-        public void Fill(System.Drawing.Color color)
-        {
-            Canvas.Alpha = color.A / 255.0f;
-            Canvas.FillColor = new Color(color.R, color.G, color.B);
-            var path = CurrentPath();
-            Canvas.FillPath(path);
-        }
-
         public void FillStyle(System.Drawing.Color color)
         {
             _fillColor = new Color(color.R, color.G, color.B, color.A);
@@ -134,15 +133,6 @@ namespace AxMaui
         {
             Canvas.StrokeColor = _strokeColor;
             Canvas.StrokeSize = _strokeWidth;
-            var path = CurrentPath();
-            Canvas.DrawPath(path);
-        }
-
-        public void Stroke(System.Drawing.Color color, float width = 1.0f)
-        {
-            Canvas.Alpha = 1;
-            Canvas.StrokeColor = new Color(color.R, color.G, color.B);
-            Canvas.StrokeSize = (float)width;
             var path = CurrentPath();
             Canvas.DrawPath(path);
         }

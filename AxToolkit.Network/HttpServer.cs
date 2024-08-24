@@ -6,10 +6,8 @@ namespace AxToolkit.Network
 {
     public abstract class HttpServer<TContext> : TcpServer where TContext : class
     {
-        public HttpServer(int maxConnection = 1000)
-            : base(maxConnection)
-        {
-        }
+        public HttpServer() : base(1000) { }
+        public HttpServer(int maxConnection = 1000) : base(maxConnection) { }
         public HttpServer(Semaphore semaphore)
             : base(semaphore)
         {

@@ -66,7 +66,7 @@ namespace AxToolkit.Charts
         public Color TicksColor { get; set; } = Color.Gray;
         public float TicksWidth { get; set; } = 1.0f;
         public float MinSpacing { get; set; } = 10;
-        public ChartFontOptions TicksFont { get; set; } = new ChartFontOptions()
+        public ChartFontOptions TicksFont { get; set; } = new ChartFontOptions
         {
             Color = Color.DarkSlateGray,
             Size = 10,
@@ -134,9 +134,9 @@ namespace AxToolkit.Charts
 
     public class Chart : IScreen
     {
-        private List<ChartComponent> _components = new List<ChartComponent>();
-        private List<ChartScale> _scales = new List<ChartScale>();
-        private List<Dataset> _datasets = new List<Dataset>();
+        private readonly List<ChartComponent> _components = new List<ChartComponent>();
+        private readonly List<ChartScale> _scales = new List<ChartScale>();
+        private readonly List<Dataset> _datasets = new List<Dataset>();
 
 
         public Chart(ChartOptions options)
@@ -158,7 +158,7 @@ namespace AxToolkit.Charts
             // Legend
             if (options.ShowLegends)
             {
-
+                // TODO -- 
             }
 
             // Scales
@@ -170,7 +170,7 @@ namespace AxToolkit.Charts
 
         public void AddScale(string name, ChartScaleOptions options)
         {
-            var scale = new ChartScale()
+            var scale = new ChartScale
             {
                 Font = options.TicksFont,
                 Name = name,
@@ -184,7 +184,7 @@ namespace AxToolkit.Charts
 
         public void AddDataset(string name, decimal[] values, ChartDatasetOptions options)
         {
-            var dset = new ListDataset()
+            var dset = new ListDataset
             {
                 Color = options.Color.Value,
                 Options = options,
@@ -197,7 +197,7 @@ namespace AxToolkit.Charts
 
         public void AddDataset(string name, IEnumerable<decimal[]> values, ChartDatasetOptions options)
         {
-            var dset = new ListDataset()
+            var dset = new ListDataset
             {
                 Color = options.Color.Value,
                 Options = options,
@@ -238,11 +238,11 @@ namespace AxToolkit.Charts
                     component.Position = new Box(chartArea.Left, chartArea.Top, sz);
                     chartArea.Left += sz.Width;
                 }
-                else if (component.Positionement == Positionements.Bottom)
+                else if (component.Positionement == Positionements.Right)
                 {
                     var sz = component.ComputeSize(ctx, null, chartArea.Height);
                     component.Position = new Box(chartArea.Right - sz.Width, chartArea.Top, sz);
-                    chartArea.Bottom -= sz.Width;
+                    chartArea.Right -= sz.Width;
                 }
             }
 

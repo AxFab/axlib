@@ -8,7 +8,8 @@ namespace AxToolkit
 {
     public abstract class FormCellAttribute : Attribute
     {
-        public FormCellAttribute(int order, string label, int group = 0)
+        protected FormCellAttribute(int order, string label) : this(order, label, 0) { }
+        protected FormCellAttribute(int order, string label, int group)
         {
             Order = order;
             Label = label;
@@ -22,7 +23,8 @@ namespace AxToolkit
 
     public class FormEntryCellAttribute : FormCellAttribute
     {
-        public FormEntryCellAttribute(int order, string label, int group = 0)
+        public FormEntryCellAttribute(int order, string label) : this(order, label, 0) { }
+        public FormEntryCellAttribute(int order, string label, int group)
             : base(order, label, group)
         {
         }
@@ -33,7 +35,8 @@ namespace AxToolkit
 
     public class FormEnumCellAttribute : FormCellAttribute
     {
-        public FormEnumCellAttribute(int order, string label, int group = 0)
+        public FormEnumCellAttribute(int order, string label) : this(order, label, 0) { }
+        public FormEnumCellAttribute(int order, string label, int group)
             : base(order, label, group)
         {
         }
@@ -42,7 +45,9 @@ namespace AxToolkit
     }
     public class FormPrintCellAttribute : FormCellAttribute
     {
-        public FormPrintCellAttribute(int order, string label, string format = null, int group = 0)
+        public FormPrintCellAttribute(int order, string label) : this(order, label, null, 0) { }
+        public FormPrintCellAttribute(int order, string label, string format) : this(order, label, format, 0) { }
+        public FormPrintCellAttribute(int order, string label, string format, int group)
             : base(order, label, group)
         {
             Format = format;

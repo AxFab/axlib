@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace AxToolkit.Mathematics;
 
-public struct Force
+public struct Force : IEquatable<Force>
 {
     public Vector Origin { get; set; }
     public Vector Vector { get; set; }
     public double Value => Vector.Length;
 
-    public static void Resolve(IEnumerable<Force> forces, Vector centerMass, double mass, Vector inertiaMoment, out Vector accLinear, out Vector accAngular)
+    public static (Vector AccLinear, Vector AccAngular) Resolve(IEnumerable<Force> forces, Vector centerMass, double mass, Vector inertiaMoment)
     {
         const double EPSILON = 0.000001;
         var linear = new Vector();
@@ -49,7 +49,11 @@ public struct Force
             couple += axis * ss * lg;
         }
 
-        accLinear = linear / mass;
-        accAngular = couple.DivNum(inertiaMoment);
+        return (linear / mass, couple.DivNum(inertiaMoment));
+    }
+
+    public bool Equals(Force other)
+    {
+        return Origin == other.Origin && Vector == other.Origin;
     }
 }

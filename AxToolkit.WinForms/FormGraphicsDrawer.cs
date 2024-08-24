@@ -55,33 +55,33 @@ namespace AxToolkit.WinForms
             => _path.CloseFigure();
 
         public void MoveTo(float x, float y)
-            => _cursor = new PointF((float)x, (float)y);
+            => _cursor = new PointF(x, y);
 
         public void LineTo(float x, float y)
         {
-            var point = new PointF((float)x, (float)y);
+            var point = new PointF(x, y);
             _path.AddLine(_cursor, point);
             _cursor = point;
         }
         public void Arc(float x, float y, float radius, float start, float end)
-            => _path.AddArc(new RectangleF((float)(x - radius), (float)(y - radius), (float)radius * 2.0f, (float)radius * 2.0f), (float)(start * 180 / Math.PI), (float)((end - start) * 180 / Math.PI));
+            => _path.AddArc(new RectangleF((x - radius), (y - radius), radius * 2.0f, radius * 2.0f), (start * 180 / (float)Math.PI), ((end - start) * 180 / (float)Math.PI));
 
         public void Elipse(float x, float y, float rx, float ry, float start, float end)
-            => _path.AddArc(new RectangleF((float)(x - rx), (float)(y - ry), (float)rx * 2.0f, (float)ry * 2.0f), (float)(start * 180 / Math.PI), (float)((end - start) * 180 / Math.PI));
+            => _path.AddArc(new RectangleF((x - rx), (y - ry), rx * 2.0f, ry * 2.0f), (start * 180 / (float)Math.PI), ((end - start) * 180 / (float)Math.PI));
 
         public void QuadTo(float x1, float y1, float x, float y)
         {
-            var point1 = new PointF((float)x1, (float)y1);
-            var pointE = new PointF((float)x, (float)y);
-            _path.AddCurve(new PointF[] { _cursor, point1, pointE });
+            var point1 = new PointF(x1, y1);
+            var pointE = new PointF(x, y);
+            _path.AddCurve(new [] { _cursor, point1, pointE });
             _cursor = pointE;
         }
         public void CurveTo(float x1, float y1, float x2, float y2, float x, float y)
         {
-            var point1 = new PointF((float)x1, (float)y1);
-            var point2 = new PointF((float)x2, (float)y2);
-            var pointE = new PointF((float)x, (float)y);
-            _path.AddBeziers(new PointF[] { _cursor, point1, point2, pointE });
+            var point1 = new PointF(x1, y1);
+            var point2 = new PointF(x2, y2);
+            var pointE = new PointF(x, y);
+            _path.AddBeziers(new [] { _cursor, point1, point2, pointE });
             _cursor = pointE;
         }
 
@@ -109,7 +109,7 @@ namespace AxToolkit.WinForms
             if (rounded)
                 CurveTo(x, y + ry * T, x + rx * T, y, x + rx, y);
             ClosePath();
-            // _path.AddRectangle(new RectangleF((float)x, (float)y, (float)width, (float)height));
+            // _path.AddRectangle(new RectangleF(x, y, width, height));
         }
 
         private Color _fillColor;
@@ -136,17 +136,17 @@ namespace AxToolkit.WinForms
         public void StrokeStyle(Color color, float width = 1.0f)
         {
             _strokeColor = color;
-            _strokeWidth = (float)width;
+            _strokeWidth = width;
         }
 
         TextVariant _fontVariant;
         public void FontStyle(string family, float size, TextVariant variant = TextVariant.None)
         {
             _fontFamily = family;
-            _fontSize = (float)size;
+            _fontSize = size;
             _fontVariant = variant;
         }
-        public void Text(float x, float y, string text, TextAlignement align = TextAlignement.Left)
+        public void Text(float x, float y, string value, TextAlignement align = TextAlignement.Left)
         {
             using var brush = new SolidBrush(_fillColor);
             var style = System.Drawing.FontStyle.Regular;
@@ -159,9 +159,9 @@ namespace AxToolkit.WinForms
             if (_fontVariant.HasFlag(TextVariant.Strikeout))
                 style |= System.Drawing.FontStyle.Strikeout;
             using var font = new System.Drawing.Font(_fontFamily, _fontSize * 0.65f, style);
-            var point = new PointF((float)x, (float)y);
+            var point = new PointF(x, y);
 
-            var msr = _graphics.MeasureString(text, font);
+            var msr = _graphics.MeasureString(value, font);
             if (align.HasFlag(TextAlignement.Right))
                 point.X -= msr.Width;
             else if (align.HasFlag(TextAlignement.Center))
@@ -171,7 +171,7 @@ namespace AxToolkit.WinForms
             else if (align.HasFlag(TextAlignement.Middle))
                 point.Y -= msr.Height / 2.0f;
 
-            _graphics.DrawString(text, font, brush, point);
+            _graphics.DrawString(value, font, brush, point);
         }
 
 
@@ -183,13 +183,13 @@ namespace AxToolkit.WinForms
 
 
         public void Rotate(float arg)
-            => _graphics.RotateTransform((float)(arg * 180 / Math.PI));
+            => _graphics.RotateTransform((arg * 180 / (float)Math.PI));
 
         public void Scale(float x, float y)
-            => _graphics.ScaleTransform((float)x, (float)y);
+            => _graphics.ScaleTransform(x, y);
 
         public void Translate(float x, float y)
-            => _graphics.TranslateTransform((float)x, (float)y);
+            => _graphics.TranslateTransform(x, y);
 
         public void DrawImage(float x, float y, Bitmap img)
         {

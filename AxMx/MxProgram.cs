@@ -103,7 +103,7 @@ namespace AxMx
 
 
             // Create message
-            var msg = new MxMessage()
+            var msg = new MxMessage
             {
                 MessageId = Guid.NewGuid(),
                 Received = DateTime.UtcNow,

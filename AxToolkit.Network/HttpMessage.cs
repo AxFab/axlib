@@ -108,10 +108,7 @@ namespace AxToolkit.Network
         private static bool ReadBody(Stream stream, HttpMessage request, int contentLength)
         {
             request.BodyContent = NetTools.ReadData(stream, contentLength);
-            if (request.BodyContent.Length < contentLength)
-            {
-
-            }
+            // TODO -- if (request.BodyContent.Length < contentLength)
             return true;
         }
         private static bool ReadChunkedBody(Stream stream, HttpMessage request)

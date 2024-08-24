@@ -16,7 +16,9 @@ public abstract class AbstractIA
     public Thread Thread { get; private set; }
 
     public string Name { get; }
-    public AbstractIA(string name)
+    public bool UseTimeout { get; private set; }
+
+    protected AbstractIA(string name)
     {
         Name = name;
     }
@@ -27,14 +29,12 @@ public abstract class AbstractIA
             throw new Exception();
         lock (_inputBuffer)
         {
-            // Console.WriteLine($"{_name} IN Read {_inputBuffer.Peek()}");
             return _inputBuffer.Dequeue();
         }
     }
 
     public void Write(string line)
     {
-        // Console.WriteLine($"{_name} OUT Write {line}");
         lock (_outputBuffer)
             _outputBuffer.Enqueue(line);
         _outputSem.Release();
@@ -53,7 +53,6 @@ public abstract class AbstractIA
         {
             lock (_inputBuffer)
                 _inputBuffer.Enqueue(line);
-            // Console.WriteLine($"{_name} IN Write {line}");
             _inputSem.Release();
         }
 
@@ -65,13 +64,12 @@ public abstract class AbstractIA
                 throw new Exception();
             lock (_outputBuffer)
             {
-                // Console.WriteLine($"{_name} OUT Read {_outputBuffer.Peek()}");
                 list.Add(_outputBuffer.Dequeue());
             }
         }
         watch.Stop();
-        // if (watch.ElapsedMilliseconds > timeMs)
-        //  throw new Exception("Player didn't respond in the allocated time");
+        if (UseTimeout && watch.ElapsedMilliseconds > timeMs)
+            throw new Exception("Player didn't respond in the allocated time");
         return list.ToArray();
     }
 

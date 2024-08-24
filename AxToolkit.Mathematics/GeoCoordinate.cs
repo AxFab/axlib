@@ -2,7 +2,7 @@
 
 namespace AxToolkit.Mathematics;
 
-public struct GeoCoordinate
+public struct GeoCoordinate  : IEquatable<GeoCoordinate>
 {
     public double BodyRadius { get; set; }
     public double Latitude { get; set; }
@@ -23,11 +23,11 @@ public struct GeoCoordinate
         Longitude = longitude;
         Azimuth = azimuth;
         Elevation = rising ?  90 : 0;
-        Rolling = 0;// rising  ? -azimuth : 0;
+        Rolling = 0;
     }
 
     [JsonIgnore]
-    public SphericalCoordinate SphericalCoordinate => new SphericalCoordinate()
+    public SphericalCoordinate SphericalCoordinate => new SphericalCoordinate
     {
         Radius = Altitude + BodyRadius,
         Teta = Longitude * Math.PI / 180,
@@ -38,9 +38,9 @@ public struct GeoCoordinate
     [JsonIgnore]
     public Vector Position => SphericalCoordinate.Vector;
     [JsonIgnore]
-    public Vector Heading => UnitLocalToGlobal(new Vector(1));
+    public Vector Heading => UnitLocalToGlobal(new Vector(1, 0, 0));
     [JsonIgnore]
-    public Vector Above => UnitLocalToGlobal(new Vector(0, 1));
+    public Vector Above => UnitLocalToGlobal(new Vector(0, 1, 0));
 
     [JsonIgnore]
     public Quaternion ToLocal => ToGlobal.Conjugate;
@@ -110,7 +110,7 @@ public struct GeoCoordinate
             .RotateY(Math.PI / 2 - sph.Phi);
 
         var az = Math.Atan2(u.Y, u.Z);
-        var el = Math.Atan2(u.X, new Vector(u.Y, u.Z).Length);
+        var el = Math.Atan2(u.X, new Vector(u.Y, u.Z, 0).Length);
         geo.Azimuth = az * 180 / Math.PI;
         geo.Elevation = el * 180 / Math.PI;
 
@@ -144,7 +144,6 @@ public struct GeoCoordinate
         var geo1Long = geo1.Longitude * Math.PI / 180;
         var geo2Long = geo2.Longitude * Math.PI / 180;
 
-        // var diffLat = geo1Lat - geo2Lat;
         var diffLong = geo1Long - geo2Long;
 
         var d = Math.Cos(geo2Lat) * Math.Sin(diffLong);
@@ -157,4 +156,19 @@ public struct GeoCoordinate
 
         return Math.Atan2(a, b) * geo1.BodyRadius;
     }
+
+    public static double CompareDifference(double a, double b)
+        => Math.Log10(Math.Abs(a - b) / Math.Pow(10, Math.Log10(a + b)));
+    
+    public static bool CompareIsEqual(double a, double b)
+        => Math.Log10(Math.Abs(a - b) / Math.Pow(10, Math.Log10(a + b))) < -6.0;
+
+    public bool Equals(GeoCoordinate other)
+        => CompareIsEqual(BodyRadius, other.BodyRadius) && CompareIsEqual(Altitude, other.Altitude) &&
+        CompareIsEqual(Latitude, other.Latitude) && CompareIsEqual(Longitude, other.Longitude) &&
+        (
+            (CompareIsEqual(Azimuth, other.Azimuth) && CompareIsEqual(Elevation, other.Elevation) && CompareIsEqual(Rolling, other.Rolling)) ||
+            (CompareIsEqual(Elevation, other.Elevation) && CompareIsEqual(Math.Abs(Elevation), 90) && CompareIsEqual(Azimuth + Rolling, other.Azimuth + other.Rolling))
+        );
+    // Technically: If elevation is +/- 90...  CAn't Azimuth and Rolling can be summed !?
 }

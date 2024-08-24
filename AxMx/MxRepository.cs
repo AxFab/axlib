@@ -58,6 +58,7 @@ namespace AxMx
 
         private void LogIssue(string error)
         {
+            Console.Error.WriteLine(error);
         }
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=

@@ -25,50 +25,50 @@ namespace AxMaui
         {
             var path = CurrentPath();
 
-            var angleStart = (float)(-start * 180 / Math.PI);
-            var angleEnd = (float)(-end * 180 / Math.PI);
-            path.AddArc((float)(x - radius), (float)(y - radius), (float)(x + radius), (float)(y + radius), angleStart, angleEnd, true);
+            var angleStart = (-start * 180 / (float)Math.PI);
+            var angleEnd = (-end * 180 / (float)Math.PI);
+            path.AddArc((x - radius), (y - radius), (x + radius), (y + radius), angleStart, angleEnd, true);
 
-            // _path.AddArc(pt.X - radius, pt.Y - radius, 2 * radius, 2 * radius, (float)(start * 180 / Math.PI), (float)((end - start) * 180 / Math.PI));
+            // _path.AddArc(pt.X - radius, pt.Y - radius, 2 * radius, 2 * radius, (start * 180 / Math.PI), ((end - start) * 180 / Math.PI));
 
         }
 
         public void Rect(float x, float y, float width, float height, float rx = 0, float ry = 0)
         {
             var path = CurrentPath();
-            path.AppendRectangle((float)x, (float)y, (float)width, (float)height);
+            path.AppendRectangle(x, y, width, height);
         }
 
-        public void Text(float x, float y, string text)
+        public void Text(float x, float y, string value)
         {
             Canvas.FontColor = _fillColor;
-            Canvas.DrawString(text, (float)x, (float)y, HorizontalAlignment.Left);
+            Canvas.DrawString(value, x, y, HorizontalAlignment.Left);
         }
 
-        public void Text(float x, float y, string text, TextAlignement align = TextAlignement.Left)
+        public void Text(float x, float y, string value, TextAlignement align)
         {
             Canvas.FontColor = _fillColor;
-            Canvas.DrawString(text, (float)x, (float)y, HorizontalAlignment.Left);
+            Canvas.DrawString(value, x, y, HorizontalAlignment.Left);
             return;
 
             if (align == TextAlignement.Left)
-                Canvas.DrawString(text, (float)x, (float)y, 500, 500, HorizontalAlignment.Left, VerticalAlignment.Top);
+                Canvas.DrawString(value, x, y, 500, 500, HorizontalAlignment.Left, VerticalAlignment.Top);
             else if (align == TextAlignement.Center)
-                Canvas.DrawString(text, (float)x - 250, (float)y, 500, 500, HorizontalAlignment.Center, VerticalAlignment.Top);
+                Canvas.DrawString(value, x - 250, y, 500, 500, HorizontalAlignment.Center, VerticalAlignment.Top);
             else if (align == TextAlignement.Right)
-                Canvas.DrawString(text, (float)x - 500, (float)y, 500, 500, HorizontalAlignment.Right, VerticalAlignment.Top);
+                Canvas.DrawString(value, x - 500, y, 500, 500, HorizontalAlignment.Right, VerticalAlignment.Top);
             else if (align == (TextAlignement.Left | TextAlignement.Bottom))
-                Canvas.DrawString(text, (float)x, (float)y - 50, 500, 50, HorizontalAlignment.Left, VerticalAlignment.Bottom);
+                Canvas.DrawString(value, x, y - 50, 500, 50, HorizontalAlignment.Left, VerticalAlignment.Bottom);
             else if (align == (TextAlignement.Center | TextAlignement.Bottom))
-                Canvas.DrawString(text, (float)x - 250, (float)y - 50, 500, 50, HorizontalAlignment.Center, VerticalAlignment.Bottom);
+                Canvas.DrawString(value, x - 250, y - 50, 500, 50, HorizontalAlignment.Center, VerticalAlignment.Bottom);
             else if (align == (TextAlignement.Right | TextAlignement.Bottom))
-                Canvas.DrawString(text, (float)x - 500, (float)y - 50, 500, 50, HorizontalAlignment.Right, VerticalAlignment.Bottom);
+                Canvas.DrawString(value, x - 500, y - 50, 500, 50, HorizontalAlignment.Right, VerticalAlignment.Bottom);
             else if (align == (TextAlignement.Left | TextAlignement.Middle))
-                Canvas.DrawString(text, (float)x, (float)y - 25, 500, 50, HorizontalAlignment.Left, VerticalAlignment.Center);
+                Canvas.DrawString(value, x, y - 25, 500, 50, HorizontalAlignment.Left, VerticalAlignment.Center);
             else if (align == (TextAlignement.Center | TextAlignement.Middle))
-                Canvas.DrawString(text, (float)x - 250, (float)y - 25, 500, 50, HorizontalAlignment.Center, VerticalAlignment.Center);
+                Canvas.DrawString(value, x - 250, y - 25, 500, 50, HorizontalAlignment.Center, VerticalAlignment.Center);
             else if (align == (TextAlignement.Right | TextAlignement.Middle))
-                Canvas.DrawString(text, (float)x - 500, (float)y - 25, 500, 50, HorizontalAlignment.Right, VerticalAlignment.Center);
+                Canvas.DrawString(value, x - 500, y - 25, 500, 50, HorizontalAlignment.Right, VerticalAlignment.Center);
             else
                 throw new NotImplementedException();
         }
@@ -88,23 +88,23 @@ namespace AxMaui
         public void MoveTo(float x, float y)
         {
             var path = CurrentPath();
-            path.MoveTo((float)x, (float)y);
+            path.MoveTo(x, y);
         }
 
         public void LineTo(float x, float y)
         {
             var path = CurrentPath();
-            path.LineTo((float)x, (float)y);
+            path.LineTo(x, y);
         }
         public void QuadTo(float x1, float y1, float x, float y)
         {
             var path = CurrentPath();
-            path.QuadTo((float)x1, (float)y1, (float)x, (float)y);
+            path.QuadTo(x1, y1, x, y);
         }
         public void CurveTo(float x1, float y1, float x2, float y2, float x, float y)
         {
             var path = CurrentPath();
-            path.CurveTo((float)x1, (float)y1, (float)x2, (float)y2, (float)x, (float)y);
+            path.CurveTo(x1, y1, x2, y2, x, y);
         }
 
         private PathF _path;
@@ -155,16 +155,16 @@ namespace AxMaui
 
         public void Translate(float x, float y)
         {
-            Canvas.Translate((float)x, (float)y);
+            Canvas.Translate(x, y);
         }
         public void Rotate(float arg)
         {
-            Canvas.Rotate((float)(arg * 180 / Math.PI));
+            Canvas.Rotate((arg * 180 / (float)Math.PI));
         }
 
         public void Scale(float x, float y)
         {
-            Canvas.Scale((float)x, (float)y);
+            Canvas.Scale(x, y);
         }
 
         private TextVariant _fontVariant;

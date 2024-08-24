@@ -26,8 +26,8 @@ namespace AxToolkit.Graphics
         void Arc(float x, float y, float radius, float start, float end);
 
 
-        void Text(float x, float y, string text, TextAlignement align);
-        void Text(float x, float y, string text) => Text(x, y, text, TextAlignement.Left);
+        void Text(float x, float y, string value, TextAlignement align);
+        void Text(float x, float y, string value) => Text(x, y, value, TextAlignement.Left);
         void FontStyle(string family, float size, TextVariant variant = TextVariant.None);
 
         void StrokeStyle(Color color, float width);
@@ -56,9 +56,9 @@ namespace AxToolkit.Graphics
     [Flags]
     public enum TextVariant
     {
-        None,
-        SmallCaps,
-        Bold, Italic, Underline, Strikeout,
+        None = 0,
+        Bold = 1, Italic = 2, Underline = 4, Strikeout = 8,
+        SmallCaps = 16,
     }
 
     public interface IFontFace

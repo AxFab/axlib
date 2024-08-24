@@ -8,8 +8,7 @@ namespace AxToolkit.Mathematics;
 public struct Vector
 {
     public Vector() : this(0, 0, 0) { }
-    public Vector(double x, double y) : this(x, y, 0) { }
-    public Vector(double x = 0, double y = 0, double z = 0)
+    public Vector(double x, double y, double z)
     {
         X = x;
         Y = y;

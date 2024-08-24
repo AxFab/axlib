@@ -88,8 +88,8 @@ namespace AxToolkit.Network
                 for (; ; )
                 {
                     var line = await ReadLine();
-                    string[] cmdParts = line.TrimStart().Split(new char[] { ' ' });
-                    string command = cmdParts[0].ToUpper().Trim();
+                    string[] cmdParts = line.TrimStart().Split([' ']);
+                    string command = cmdParts[0].ToUpperInvariant().Trim();
                     string argsText = line.Replace(cmdParts[0], "").Trim(); // TODO replace first only !
 
                     bool knownCmd;

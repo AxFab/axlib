@@ -58,7 +58,7 @@ namespace AxToolkit.Charts
         {
             double niceFraction; // nice, rounded fraction
             var exponent = Math.Floor(Math.Log10((double)range)); // exponent of range
-            var fraction = (double)range / Math.Pow(10, (double)exponent); // fractionnal part of range
+            var fraction = (double)range / Math.Pow(10, exponent); // fractionnal part of range
 
             if (round)
                 niceFraction = fraction < 1.5 ? 1 : fraction < 3 ? 2 : fraction < 7 ? 5 : 10;

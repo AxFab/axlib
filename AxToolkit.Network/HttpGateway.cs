@@ -6,7 +6,7 @@ namespace AxToolkit.Network
 {
     public class HttpGateway : HttpServer<HttpGatewayContext>
     {
-        private Dictionary<string, int> _services = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> _services = new Dictionary<string, int>();
         public HttpGateway(int maxConnection = 1000) : base(maxConnection) { }
         public HttpGateway(Semaphore semaphore) : base(semaphore) { }
 

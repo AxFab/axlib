@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -238,7 +239,7 @@ namespace AxToolkit.Graphics
                     ctx.LineTo(gx, top);
                     ctx.Stroke();
 
-                    ctx.Text(gx, oy, dx.Item1.ToString(), TextAlignement.Center);
+                    ctx.Text(gx, oy, dx.Item1.ToString(CultureInfo.InvariantCulture), TextAlignement.Center);
                     ctx.Fill();
                 }
             }
@@ -263,7 +264,7 @@ namespace AxToolkit.Graphics
                     ctx.LineTo(left + viewWidth, gy);
                     ctx.Stroke();
 
-                    ctx.Text(left - 3, gy, dy.Item1.ToString(), TextAlignement.Right | TextAlignement.Middle);
+                    ctx.Text(left - 3, gy, dy.Item1.ToString(CultureInfo.InvariantCulture), TextAlignement.Right | TextAlignement.Middle);
                     ctx.Fill();
                 }
             }

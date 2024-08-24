@@ -7,11 +7,9 @@ using System.Text.Json.Serialization;
 namespace AxToolkit.Mathematics;
 
 [JsonConverter(typeof(QuaternionJsonConverter))]
-public struct Quaternion
+public struct Quaternion : IEquatable<Quaternion>
 {
     public Quaternion() : this(0, 0, 0, 0) { }
-    public Quaternion(double x, double y) : this(x, y, 0, 0) { }
-    public Quaternion(double x, double y, double z) : this(x, y, z, 0) { }
     public Quaternion(double x, double y, double z, double w)
     {
         X = x;
@@ -52,8 +50,8 @@ public struct Quaternion
     {
         get
         {
-            var x = Transform(new Vector(1));
-            var y = Transform(new Vector(0, 1));
+            var x = Transform(new Vector(1, 0, 0));
+            var y = Transform(new Vector(0, 1, 0));
             var z = Transform(new Vector(0, 0, 1));
             return Math.Abs(x.Length - 1) < 0.0000000000001
                 && Math.Abs(y.Length - 1) < 0.0000000000001
@@ -160,10 +158,8 @@ public struct Quaternion
                 return Norm.Axis; // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
             var angle = 2 * Math.Acos(W);
             double s = Math.Sqrt(1 - W * W); // assuming quaternion normalised then w is less than 1, so term always positive.
-            if (s < 1e-6)
-                // test to avoid divide by zero, s is always positive due to sqrt
-                // if s close to zero then direction of axis not important
-                return new Vector(X, Y, Z); // if it is important that axis is normalised then replace with x=1; y=z=0;
+            if (s < 1e-9) // avoid divide by zero, if s close to zero, then direction of axis not important
+                return new Vector(1, 0, 0);
             else
                 return new Vector(X / s, Y / s, Z / s).Norm;
         }
@@ -219,6 +215,9 @@ public struct Quaternion
             (from.X * to.Y - from.Y * to.X) * invs,
             0.5 * s).Norm;
     }
+
+    public bool Equals(Quaternion other)
+        => X == other.X && Y == other.Y && Z == other.Z && W == other.W;
 
     public static readonly Quaternion Identity = new Quaternion(0, 0, 0, 1);
 }

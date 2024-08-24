@@ -24,7 +24,7 @@ public class NeuralNetwork
         }
     }
 
-    private Neurone[][] _layers;
+    private readonly Neurone[][] _layers;
 
     public Statistics Telemetry { get; set; }
 
@@ -44,7 +44,7 @@ public class NeuralNetwork
         var arr = new double[size];
         for (int i = 0; i < size; ++i)
             arr[i] = (rand.NextDouble() * max - half);
-        // arr[i] = 1.0 / (rand.NextDouble() * max - half);
+        // TODO -- Might try another formula like: 1 / VAL
         return arr;
     }
 

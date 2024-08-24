@@ -8,7 +8,6 @@ namespace AxToolkit.Mathematics;
 public struct VectorF
 {
     public VectorF() : this(0, 0, 0) { }
-    public VectorF(float x, float y) : this(x, y, 0) { }
     public VectorF(float x, float y, float z)
     {
         X = x;
@@ -79,9 +78,6 @@ public struct VectorF
     }
 
     public override int GetHashCode() => (int)(44646647 * X + 92508121 * Y + 33184589 * Z);
-
-    //public static VectorF operator *(VectorF a, Quaternion q)
-    //    => throw new NotImplementedException();
 
     public static float AngleRad(VectorF a, VectorF b)
         => (float)Math.Acos(DotProduct(a, b) / (a.Length * b.Length));

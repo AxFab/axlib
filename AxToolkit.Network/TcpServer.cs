@@ -5,15 +5,15 @@ namespace AxToolkit.Network
 {
     public abstract class TcpServer
     {
-        public TcpServer() : this(1000) { }
-        public TcpServer(int maxConnection) : this(new Semaphore(maxConnection, maxConnection)) { }
-        public TcpServer(Semaphore semaphore)
+        protected TcpServer() : this(1000) { }
+        protected TcpServer(int maxConnection) : this(new Semaphore(maxConnection, maxConnection)) { }
+        protected TcpServer(Semaphore semaphore)
         {
             _semaphore = semaphore;
         }
 
-        private CancellationToken _closingToken = new CancellationToken();
-        private Semaphore _semaphore;
+        private readonly CancellationToken _closingToken = new CancellationToken();
+        private readonly Semaphore _semaphore;
 
         public void Listen() => Listen(80, false);
         public void Listen(int port) => Listen(port, false);

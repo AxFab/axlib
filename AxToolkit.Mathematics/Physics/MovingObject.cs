@@ -37,7 +37,7 @@ public static class MovingObject
     {
         var pos = u1.Position - u2.Position;
 
-        var normal = pos / pos.Length;
+        var normal = pos.Norm();
         var p = 2 * (Vec2.DotProduct(u1.Speed, normal) - Vec2.DotProduct(u2.Speed, normal)) / (u1.Mass + u2.Mass);
 
         var imp1 = p * u1.Mass;
@@ -60,19 +60,4 @@ public static class MovingObject
         };
     }
 
-    //public static void Collision2CirclesResolve2(ICircleMovingObject u1, ICircleMovingObject u2)
-    //{
-    // var pos = u1.Position - u2.Position;
-    // var spd = u1.Speed - u2.Speed;
-    // var mss = (u1.Mass + u2.Mass) / (u1.Mass * u2.Mass);
-
-    // var posSq = pos.LengthSq;
-    // var dot = Vec2.DotProduct(pos, spd);
-    // var force = pos * (dot / posSq / mss);
-
-    //var impulse = Math.Max(1.0, opt.MaxImpact.Value / force.Length);
-
-    //u1.Speed -= force * ((impulse + 1) / u1.Mass);
-    //u2.Speed += force * ((impulse + 1) / u2.Mass);
-    //}
 }

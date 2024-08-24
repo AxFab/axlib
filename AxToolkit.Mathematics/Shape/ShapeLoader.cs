@@ -41,7 +41,7 @@ public class ShapeLoader
         // Read file header
         int filecode = file.ReadInt32();
         if (filecode != 0x0a270000)
-            throw new Exception("Bad format");
+            throw new FormatException("Bad format");
         file.BaseStream.Seek(24, SeekOrigin.Begin);
 
         var fileLength = SwapBE(file.ReadInt32()); // BE
@@ -66,17 +66,13 @@ public class ShapeLoader
             var contentLength = SwapBE(file.ReadInt32()); // BE
             var shape = (SHPShapeType)file.ReadInt32(); // LE
             var sz = 0;
-            switch (shape)
-            {
-                case SHPShapeType.PolyLine:
-                    list.Add(LoadPolyLine(file, tag, ref sz));
-                    break;
-                default:
-                    break;
-            }
+            if (shape == SHPShapeType.PolyLine)
+                list.Add(LoadPolyLine(file, tag, ref sz));
+            else
+                throw new FormatException("Unsupported shape");
 
             if (contentLength != sz)
-                throw new Exception("Corrupted data");
+                throw new FormatException("Corrupted data");
 
             restData -= contentLength + 4;
         }
@@ -100,10 +96,9 @@ public class ShapeLoader
         {
             var x = file.ReadDouble();
             var y = file.ReadDouble();
-            line.Points.Add(new double[] { x, y });
+            line.Points.Add([x, y]);
         }
 
-        // Console.WriteLine($"PolyLine {recordNumber}] {partCount} parts ({parts[0]}), {pointCount} points");
         return line;
     }
 }

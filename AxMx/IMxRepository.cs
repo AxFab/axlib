@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AxMx
 {
-    public interface IBaseRepository<T>
+    public interface IBaseRepository<in T>
     {
         Task Insert(T value);
         Task Update(T value);

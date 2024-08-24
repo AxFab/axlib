@@ -15,10 +15,9 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ﻿using System;
 
-namespace AxMaui
+namespace AxMaui;
+
+// All the code in this file is only included on Tizen.
+public class PlatformClass1
 {
-    // All the code in this file is only included on Tizen.
-    public class PlatformClass1
-    {
-    }
 }

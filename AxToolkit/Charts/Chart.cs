@@ -95,10 +95,12 @@ public class ChartDatasetOptions
 
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-struct Range
+struct Range : IEquatable<Range>
 {
     public decimal Min { get; set; }
     public decimal Max { get; set; }
+
+    public bool Equals(Range other) => Min == other.Min && Max == other.Max;
 }
 
 internal abstract class Dataset

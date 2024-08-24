@@ -124,11 +124,13 @@ public struct Quaternion : IEquatable<Quaternion>
     public static double DotProduct(Quaternion p, Quaternion q)
         => p.X * q.X + p.Y * q.Y + p.Z * q.Z + p.W * q.W;
 
-    public static Quaternion operator +(Quaternion a, Quaternion b)
-        => new Quaternion(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
+    public Quaternion Add(Quaternion o)
+        => new Quaternion(X + o.X, Y + o.Y, Z + o.Z, W + o.W);
+    public Quaternion Sub(Quaternion o)
+        => new Quaternion(X - o.X, Y - o.Y, Z - o.Z, W - o.W);
 
-    public static Quaternion operator -(Quaternion a, Quaternion b)
-        => new Quaternion(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
+    public static Quaternion operator +(Quaternion a, Quaternion b) => a.Add(b);
+    public static Quaternion operator -(Quaternion a, Quaternion b) => a.Sub(b);
 
     public static Quaternion Concat(Quaternion q0, Quaternion q1)
         => new Quaternion(

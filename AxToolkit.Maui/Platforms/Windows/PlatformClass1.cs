@@ -13,10 +13,9 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-﻿namespace AxMaui
+﻿namespace AxMaui;
+
+// All the code in this file is only included on Windows.
+public class PlatformClass1
 {
-    // All the code in this file is only included on Windows.
-    public class PlatformClass1
-    {
-    }
 }

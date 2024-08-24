@@ -160,8 +160,7 @@ public class SmtpSession
 
     internal void ChunkPush(byte[] value)
     {
-        if (_chunkBuffer == null)
-            _chunkBuffer = new MemoryStream();
+        _chunkBuffer ??= new MemoryStream();
         _chunkBuffer.Write(value, 0, value.Length);
     }
 

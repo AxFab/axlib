@@ -81,21 +81,3 @@ public static class ColorExt
         return (Color)hsl;
     }
 }
-
-public struct HSLColor
-{
-    public float Hue { get; set; }
-    public float Saturation { get; set; }
-    public float Luminance { get; set; }
-
-    public static HSLColor FromColor(Color color)
-    {
-        throw new NotImplementedException();
-    }
-
-    public static explicit operator Color(HSLColor hsl)
-    {
-        throw new NotImplementedException();
-    }
-
-}

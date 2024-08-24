@@ -20,7 +20,7 @@ using System.Text.Json.Serialization;
 namespace AxToolkit.Mathematics;
 
 [JsonConverter(typeof(VectorJsonConverter))]
-public struct Vector
+public struct Vector : IEquatable<Vector>
 {
     public Vector() : this(0, 0, 0) { }
     public Vector(double x, double y, double z)
@@ -55,43 +55,36 @@ public struct Vector
     public static Vector CrossProduct(Vector a, Vector b)
         => new Vector(a.Y * b.Z - b.Y * a.Z, a.Z * b.X - b.Z * a.X, a.X * b.Y - b.X * a.Y);
 
-    public static Vector operator +(Vector a, Vector b)
-        => new Vector(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+    public Vector Add(Vector o) => new Vector(X + o.X, Y + o.Y, Z + o.Z);
+    public Vector Sub(Vector o) => new Vector(X - o.X, Y - o.Y, Z - o.Z);
+    public Vector Mul(double k) => new Vector(X * k, Y * k, Z * k);
+    public Vector Div(double k) => new Vector(X / k, Y / k, Z / k);
+    public int CompareTo(double k) => LengthSq.CompareTo(k * k);
 
-    public static Vector operator -(Vector a, Vector b)
-        => new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
-    public static Vector operator *(Vector a, double k)
-        => new Vector(a.X * k, a.Y * k, a.Z * k);
+    public static Vector operator +(Vector a, Vector b) => a.Add(b);
 
-    public static Vector operator *(double k, Vector a)
-        => new Vector(a.X * k, a.Y * k, a.Z * k);
+    public static Vector operator -(Vector a, Vector b) => a.Sub(b);
 
-    public static Vector operator /(Vector a, double k)
-        => new Vector(a.X / k, a.Y / k, a.Z / k);
+    public static Vector operator *(Vector a, double k) => a.Mul(k);
 
-    public static Vector operator /(double k, Vector a)
-        => new Vector(k / a.X, k / a.Y, k / a.Z);
+    public static Vector operator *(double k, Vector a) => a.Mul(k);
 
-    public static Vector operator -(Vector a)
-        => new Vector(-a.X, -a.Y, -a.Z);
+    public static Vector operator /(Vector a, double k) => a.Div(k);
 
-    public static bool operator ==(Vector a, Vector b)
-        => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
-    public static bool operator !=(Vector a, Vector b)
-        => a.X != b.X || a.Y != b.Y || a.Z != b.Z;
+    public static Vector operator -(Vector a) => new Vector(-a.X, -a.Y, -a.Z);
 
-    public bool AreEquals(Vector v) => AreEquals(v, 0.00001);
-    public bool AreEquals(Vector v, double epsilon)
-    {
-        var d = this - v;
-        return Math.Abs(d.X) < epsilon && Math.Abs(d.Y) < epsilon && Math.Abs(d.Z) < epsilon;
-    }
+    public static bool operator ==(Vector a, Vector b) => a.Equals(b);
+    public static bool operator !=(Vector a, Vector b) => !a.Equals(b);
+
+    public bool Equals(Vector o)
+        => AxMath.AlmostEqual(X, o.X) && AxMath.AlmostEqual(Y, o.Y) && AxMath.AlmostEqual(Z, o.Z);
+ 
     public override bool Equals(object obj)
     {
         if (!(obj is Vector v))
             return false;
-        return this == v;
+        return Equals(v);
     }
 
     public override int GetHashCode() => (int)(44646647 * X + 92508121 * Y + 33184589 * Z);
@@ -129,6 +122,7 @@ public struct Vector
         => new Vector(X * v.X, Y * v.Y, Z * v.Z);
     public Vector DivNum(Vector v)
         => new Vector(X / v.X, Y / v.Y, Z / v.Z);
+
 }
 
 public static class VectorEnumerable

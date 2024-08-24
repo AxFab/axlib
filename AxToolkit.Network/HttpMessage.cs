@@ -33,8 +33,7 @@ public class HttpMessage
     public void Send(Stream stream, Encoding? encoding) => Send(stream, encoding, true);
     public void Send(Stream stream, Encoding? encoding, bool writeContent)
     {
-        if (encoding == null)
-            encoding = Encoding.UTF8;
+        encoding ??= Encoding.UTF8;
 
         if (Method == HttpMethod.None)
             stream.Write(encoding.GetBytes($"HTTP/1.1 {Status} {StatusMessage}\r\n"));

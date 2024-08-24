@@ -121,8 +121,7 @@ namespace AxMx
             MxThread thread = null;
             if (uid.HasValue)
                 thread = await Threads.Find(x => x.ThreadId == uid.Value).FirstOrDefaultAsync();
-            if (thread == null)
-                thread = await Threads.Find(x => x.Subject == subject).SortByDescending(x => x.LastUpdate).FirstOrDefaultAsync();
+            thread ??= await Threads.Find(x => x.Subject == subject).SortByDescending(x => x.LastUpdate).FirstOrDefaultAsync();
             return thread;
         }
     }

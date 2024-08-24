@@ -124,8 +124,7 @@ public class MauiCanvasDrawer : IDrawingContext
     private PathF _path;
     private PathF CurrentPath()
     {
-        if (_path == null)
-            _path = new PathF();
+        _path ??= new PathF();
         return _path;
     }
 

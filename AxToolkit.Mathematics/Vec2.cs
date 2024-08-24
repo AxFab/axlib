@@ -57,11 +57,18 @@ public struct Vec2
     public static Vec2 Left => new Vec2(-1, 0);
     public static Vec2 Right => new Vec2(1, 0);
 
-    public static Vec2 operator +(Vec2 v1, Vec2 v2) => new Vec2(v1.X + v2.X, v1.Y + v2.Y);
-    public static Vec2 operator -(Vec2 v1, Vec2 v2) => new Vec2(v1.X - v2.X, v1.Y - v2.Y);
-    public static Vec2 operator *(Vec2 v1, double k) => new Vec2(v1.X * k, v1.Y * k);
-    public static Vec2 operator *(double k, Vec2 v1) => new Vec2(v1.X * k, v1.Y * k);
-    public static Vec2 operator /(Vec2 v1, double k) => new Vec2(v1.X / k, v1.Y / k);
+    public Vec2 Add(Vec2 o) => new Vec2(X + o.X, Y + o.Y);
+    public Vec2 Sub(Vec2 o) => new Vec2(X - o.X, Y - o.Y);
+    public Vec2 Mul(double k) => new Vec2(X * k, Y * k);
+    public Vec2 Div(double k) => new Vec2(X / k, Y / k);
+    public int CompareTo(double k) => LengthSq.CompareTo(k * k);
+
+    
+    public static Vec2 operator +(Vec2 a, Vec2 b) => a.Add(b);
+    public static Vec2 operator -(Vec2 a, Vec2 b) => a.Sub(b);
+    public static Vec2 operator *(Vec2 a, double k) => a.Mul(k);
+    public static Vec2 operator *(double k, Vec2 a) => a.Mul(k);
+    public static Vec2 operator /(Vec2 a, double k) => a.Div(k);
 
     public static bool operator <=(Vec2 v1, double k) => v1.LengthSq <= k * k;
     public static bool operator >=(Vec2 v1, double k) => v1.LengthSq >= k * k;

@@ -1,12 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
-    <Title>Ax Toolkit</Title>
+	<Title>Ax Toolkit</Title>
+	<Version>1.0.0</Version>
     <Description>General Toolkit for C# projects with various helpers</Description>
     <Authors>Fabien Bavent</Authors>
   </PropertyGroup>

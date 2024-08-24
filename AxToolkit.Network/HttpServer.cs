@@ -51,8 +51,7 @@ public abstract class HttpServer<TContext> : TcpServer where TContext : class
                 return;
 
             // Handle request
-            if (context == null)
-                context = NewSession(client, secured);
+            context ??= NewSession(client, secured);
             var response = Handle(request, context);
             if (response == null)
                 return;

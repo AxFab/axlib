@@ -20,7 +20,7 @@ using System.Text.Json.Serialization;
 namespace AxToolkit.Mathematics;
 
 [JsonConverter(typeof(VectorFJsonConverter))]
-public struct VectorF
+public struct VectorF : IEquatable<VectorF>
 {
     public VectorF() : this(0, 0, 0) { }
     public VectorF(float x, float y, float z)
@@ -53,43 +53,37 @@ public struct VectorF
     public static VectorF CrossProduct(VectorF a, VectorF b)
         => new VectorF(a.Y * b.Z - b.Y * a.Z, a.Z * b.X - b.Z * a.X, a.X * b.Y - b.X * a.Y);
 
-    public static VectorF operator +(VectorF a, VectorF b)
-        => new VectorF(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+    public VectorF Add(VectorF o) => new VectorF(X + o.X, Y + o.Y, Z + o.Z);
+    public VectorF Sub(VectorF o) => new VectorF(X - o.X, Y - o.Y, Z - o.Z);
+    public VectorF Mul(float k) => new VectorF(X * k, Y * k, Z * k);
+    public VectorF Div(float k) => new VectorF(X / k, Y / k, Z / k);
+    public int CompareTo(float k) => LengthSq.CompareTo(k * k);
 
-    public static VectorF operator -(VectorF a, VectorF b)
-        => new VectorF(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
-    public static VectorF operator *(VectorF a, float k)
-        => new VectorF(a.X * k, a.Y * k, a.Z * k);
+    public static VectorF operator +(VectorF a, VectorF b) => a.Add(b);
 
-    public static VectorF operator *(float k, VectorF a)
-        => new VectorF(a.X * k, a.Y * k, a.Z * k);
+    public static VectorF operator -(VectorF a, VectorF b) => a.Sub(b);
 
-    public static VectorF operator /(VectorF a, float k)
-        => new VectorF(a.X / k, a.Y / k, a.Z / k);
+    public static VectorF operator *(VectorF a, float k) => a.Mul(k);
 
-    public static VectorF operator /(float k, VectorF a)
-        => new VectorF(a.X / k, a.Y / k, a.Z / k);
+    public static VectorF operator *(float k, VectorF a) => a.Mul(k);
 
-    public static VectorF operator -(VectorF a)
-        => new VectorF(-a.X, -a.Y, -a.Z);
+    public static VectorF operator /(VectorF a, float k) => a.Div(k);
 
-    public static bool operator ==(VectorF a, VectorF b)
-        => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
-    public static bool operator !=(VectorF a, VectorF b)
-        => a.X != b.X || a.Y != b.Y || a.Z != b.Z;
+    public static VectorF operator -(VectorF a) => new VectorF(-a.X, -a.Y, -a.Z);
 
-    public bool AreEquals(VectorF v) => AreEquals(v, 0.0001f);
-    public bool AreEquals(VectorF v, float epsilon)
-    {
-        var d = this - v;
-        return Math.Abs(d.X) < epsilon && Math.Abs(d.Y) < epsilon && Math.Abs(d.Z) < epsilon;
-    }
+    public static bool operator ==(VectorF a, VectorF b) => a.Equals(b);
+    public static bool operator !=(VectorF a, VectorF b) => !a.Equals(b);
+
+    public bool Equals(VectorF o)
+        => AxMath.AlmostEqual(X, o.X) && AxMath.AlmostEqual(Y, o.Y) && AxMath.AlmostEqual(Z, o.Z);
+
+
     public override bool Equals(object obj)
     {
         if (!(obj is VectorF v))
             return false;
-        return this == v;
+        return Equals(v);
     }
 
     public override int GetHashCode() => (int)(44646647 * X + 92508121 * Y + 33184589 * Z);

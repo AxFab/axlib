@@ -66,8 +66,7 @@ public class NeuralNetwork
     public NeuralNetwork(int[] size) : this(size, null) { }
     public NeuralNetwork(int[] size, double[] weights)
     {
-        if (weights == null)
-            weights = RandomWeights(LinksCount(size));
+        weights ??= RandomWeights(LinksCount(size));
 
         var list = new List<Neurone[]>();
         for (int j = 1; j < size.Length; ++j)

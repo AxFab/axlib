@@ -1,0 +1,36 @@
+# Git ignore for CSharp projects
+# Use file white list and folder white list
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+*
+!*/
+
+# Black-listed directories
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+.*/
+
+
+# Allow repository files
+!.git*
+!*.md
+
+# Allow C# sources files
+!*.cs
+!*.csproj
+!*.sln
+!*.xaml
+
+# Allow Web source files
+!*.html
+!*.css
+!*.js
+!*.vue
+
+!**/Platforms/**/*
+!**/Resources/**/*
+
+!*.sh
+
+

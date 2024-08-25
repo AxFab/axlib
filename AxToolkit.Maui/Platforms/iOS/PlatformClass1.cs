@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-﻿namespace AxMaui;
+namespace AxToolkit.Maui;
 
 // All the code in this file is only included on iOS.
 public class PlatformClass1

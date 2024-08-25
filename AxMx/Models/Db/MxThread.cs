@@ -13,16 +13,12 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace AxMx.Models.Db
 {
+    [Serializable]
     public class MxThread
     {
         [BsonId]

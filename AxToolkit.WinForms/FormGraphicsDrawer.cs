@@ -14,6 +14,7 @@
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 using AxToolkit.Graphics;
+using AxToolkit.Mathematics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.Versioning;
@@ -72,10 +73,10 @@ public class FormGraphicsDrawer : IDrawingContext
         _cursor = point;
     }
     public void Arc(float x, float y, float radius, float start, float end)
-        => _path.AddArc(new RectangleF((x - radius), (y - radius), radius * 2.0f, radius * 2.0f), (start * 180 / (float)Math.PI), ((end - start) * 180 / (float)Math.PI));
+        => _path.AddArc(new RectangleF((x - radius), (y - radius), radius * 2.0f, radius * 2.0f), AxMath.Radian2Degree(start), AxMath.Radian2Degree(end - start));
 
     public void Elipse(float x, float y, float rx, float ry, float start, float end)
-        => _path.AddArc(new RectangleF((x - rx), (y - ry), rx * 2.0f, ry * 2.0f), (start * 180 / (float)Math.PI), ((end - start) * 180 / (float)Math.PI));
+        => _path.AddArc(new RectangleF((x - rx), (y - ry), rx * 2.0f, ry * 2.0f), AxMath.Radian2Degree(start ), AxMath.Radian2Degree(end - start));
 
     public void QuadTo(float x1, float y1, float x, float y)
     {
@@ -93,9 +94,9 @@ public class FormGraphicsDrawer : IDrawingContext
         _cursor = pointE;
     }
 
-    public void Rect(float x, float y, float width, float height, float rx = 0, float ry = 0)
+    public void Rect(float x, float y, float width, float height, float rx, float ry)
     {
-        var T = 1.0f - 0.707f;
+        const float T = 1.0f - 0.707f;
         rx = Math.Max(0, Math.Min(rx, width / 2));
         ry = Math.Max(0, Math.Min(ry, height / 2));
         bool rounded = rx != 0 && ry != 0;
@@ -117,7 +118,6 @@ public class FormGraphicsDrawer : IDrawingContext
         if (rounded)
             CurveTo(x, y + ry * T, x + rx * T, y, x + rx, y);
         ClosePath();
-        // _path.AddRectangle(new RectangleF(x, y, width, height));
     }
 
     private Color _fillColor;
@@ -141,20 +141,20 @@ public class FormGraphicsDrawer : IDrawingContext
         _graphics.DrawPath(pen, _path);
     }
 
-    public void StrokeStyle(Color color, float width = 1.0f)
+    public void StrokeStyle(Color color, float width)
     {
         _strokeColor = color;
         _strokeWidth = width;
     }
 
     TextVariant _fontVariant;
-    public void FontStyle(string family, float size, TextVariant variant = TextVariant.None)
+    public void FontStyle(string family, float size, TextVariant variant)
     {
         _fontFamily = family;
         _fontSize = size;
         _fontVariant = variant;
     }
-    public void Text(float x, float y, string value, TextAlignement align = TextAlignement.Left)
+    public void Text(float x, float y, string value, TextAlignement align)
     {
         using var brush = new SolidBrush(_fillColor);
         var style = System.Drawing.FontStyle.Regular;
@@ -191,7 +191,7 @@ public class FormGraphicsDrawer : IDrawingContext
 
 
     public void Rotate(float arg)
-        => _graphics.RotateTransform((arg * 180 / (float)Math.PI));
+        => _graphics.RotateTransform(AxMath.Radian2Degree(arg));
 
     public void Scale(float x, float y)
         => _graphics.ScaleTransform(x, y);

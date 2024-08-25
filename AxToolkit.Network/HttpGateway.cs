@@ -21,7 +21,8 @@ namespace AxToolkit.Network;
 public class HttpGateway : HttpServer<HttpGatewayContext>
 {
     private readonly Dictionary<string, int> _services = new Dictionary<string, int>();
-    public HttpGateway(int maxConnection = 1000) : base(maxConnection) { }
+    public HttpGateway() : base() { }
+    public HttpGateway(int maxConnection) : base(maxConnection) { }
     public HttpGateway(Semaphore semaphore) : base(semaphore) { }
 
     public void AddService(string host, int port) => _services.Add(host, port);
@@ -63,9 +64,6 @@ public class HttpGateway : HttpServer<HttpGatewayContext>
     {
         return null;
     }
-
-    private static readonly object _x509Lock = new object();
-    private static X509Certificate _x509Certificate = null;
 
     public override X509Certificate? SelectCertificate(object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate? remoteCertificate, string[] acceptableIssuers)
     {

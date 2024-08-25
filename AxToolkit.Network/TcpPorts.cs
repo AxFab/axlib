@@ -13,9 +13,12 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-namespace AxMaui;
+namespace AxToolkit.Network;
 
-// All the code in this file is only included on Tizen.
-public class PlatformClass1
+public static class TcpPorts
 {
+    public const int HTTP = 80;
+    public const int HTTPS = 443;
+    public const int SMTP = 25;
+
 }

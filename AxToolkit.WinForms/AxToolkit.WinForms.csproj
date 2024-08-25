@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AxToolkit.Mathematics\AxToolkit.Mathematics.csproj" />
     <ProjectReference Include="..\AxToolkit\AxToolkit.csproj" />
   </ItemGroup>
 

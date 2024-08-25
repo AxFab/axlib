@@ -30,7 +30,7 @@ public abstract class TcpServer
     private readonly CancellationToken _closingToken = new CancellationToken();
     private readonly Semaphore _semaphore;
 
-    public void Listen() => Listen(80, false);
+    public void Listen() => Listen(TcpPorts.HTTP, false);
     public void Listen(int port) => Listen(port, false);
     public void Listen(int port, bool secured)
     {

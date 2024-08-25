@@ -100,12 +100,8 @@ public class MxProgram : SmtpServer
         // Parse parameters
         var headers = new Dictionary<string, string>();
         var headKey = new List<string>();
-        for (; ; )
+        for (var line = NetTools.ReadLine(bodyStream); !string.IsNullOrEmpty(line); line = NetTools.ReadLine(bodyStream))
         {
-            var line = NetTools.ReadLine(bodyStream);
-            if (string.IsNullOrEmpty(line))
-                break;
-
             var idx = line.IndexOf(':');
             if (idx <= 0)
                 return false;

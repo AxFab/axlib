@@ -13,16 +13,18 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-﻿using AxToolkit.Graphics;
+using AxToolkit.Graphics;
 
-namespace AxMaui;
+namespace AxToolkit.Maui;
 
 public class DrawableScreen : IDrawable
 {
-    public DrawableScreen(IScreen screen = null) {
+    public DrawableScreen() { }
+    
+    public DrawableScreen(IScreen screen) {
         Screen = screen;
     }
-    public IScreen Screen { get; set; }
+    public IScreen? Screen { get; set; }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {

@@ -59,6 +59,10 @@ public struct Vector : IEquatable<Vector>
     public Vector Sub(Vector o) => new Vector(X - o.X, Y - o.Y, Z - o.Z);
     public Vector Mul(double k) => new Vector(X * k, Y * k, Z * k);
     public Vector Div(double k) => new Vector(X / k, Y / k, Z / k);
+    public Vector Subtract(Vector o) => Sub(o);
+    public Vector Multiply(float k) => Mul(k);
+    public Vector Divide(float k) => Div(k);
+    public Vector Negate() => new Vector(-X, -Y, -Z);
     public int CompareTo(double k) => LengthSq.CompareTo(k * k);
 
 
@@ -114,10 +118,7 @@ public struct Vector : IEquatable<Vector>
         var s = Math.Sin(angle);
         return new Vector(c * X - s * Y, s * X + c * Y, Z);
     }
-
-    private const string FormatString = "0.000";
-    public override string ToString() => $"[X:{X.ToString(FormatString, CultureInfo.InvariantCulture)}, Y:{Y.ToString(FormatString, CultureInfo.InvariantCulture)}, Z:{Z.ToString(FormatString, CultureInfo.InvariantCulture)}]";
-
+    public override string ToString() => FormattableString.Invariant($"[X:{X:0.000}, Y:{Y:0.000}, Z:{Z:0.000}]");
     public Vector MulNum(Vector v)
         => new Vector(X * v.X, Y * v.Y, Z * v.Z);
     public Vector DivNum(Vector v)

@@ -25,7 +25,7 @@ public class Program : HttpGateway
     private string _password;
     private string _index;
     private readonly object _x509Lock = new object();
-    private X509Certificate _x509Certificate = null;
+    private X509Certificate _x509Certificate;
 
     public static void Main(string[] args)
     {

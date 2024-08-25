@@ -95,13 +95,10 @@ public static class NetTools
             else
             {
                 toRead = 0;
-                for (int i = 1; i < sackArr.Length; ++i)
+                for (int i = 1; toRead == 0 && i < sackArr.Length; ++i)
                 {
                     if (sackArr[i] != endingArr[i])
-                    {
                         toRead = 1;
-                        break;
-                    }
                 }
                 if (toRead == 0)
                 {

@@ -14,8 +14,9 @@
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 using AxToolkit.Graphics;
+using AxToolkit.Mathematics;
 
-namespace AxMaui;
+namespace AxToolkit.Maui;
 
 // All the code in this file is included in all platforms.
 public class MauiCanvasDrawer : IDrawingContext
@@ -38,16 +39,12 @@ public class MauiCanvasDrawer : IDrawingContext
     public void Arc(float x, float y, float radius, float start, float end)
     {
         var path = CurrentPath();
-
-        var angleStart = (-start * 180 / (float)Math.PI);
-        var angleEnd = (-end * 180 / (float)Math.PI);
+        var angleStart = AxMath.Radian2Degree(-start);
+        var angleEnd = AxMath.Radian2Degree(-end);
         path.AddArc((x - radius), (y - radius), (x + radius), (y + radius), angleStart, angleEnd, true);
-
-        // _path.AddArc(pt.X - radius, pt.Y - radius, 2 * radius, 2 * radius, (start * 180 / Math.PI), ((end - start) * 180 / Math.PI));
-
     }
 
-    public void Rect(float x, float y, float width, float height, float rx = 0, float ry = 0)
+    public void Rect(float x, float y, float width, float height, float rx, float ry)
     {
         var path = CurrentPath();
         path.AppendRectangle(x, y, width, height);
@@ -63,28 +60,6 @@ public class MauiCanvasDrawer : IDrawingContext
     {
         Canvas.FontColor = _fillColor;
         Canvas.DrawString(value, x, y, HorizontalAlignment.Left);
-        return;
-
-        if (align == TextAlignement.Left)
-            Canvas.DrawString(value, x, y, 500, 500, HorizontalAlignment.Left, VerticalAlignment.Top);
-        else if (align == TextAlignement.Center)
-            Canvas.DrawString(value, x - 250, y, 500, 500, HorizontalAlignment.Center, VerticalAlignment.Top);
-        else if (align == TextAlignement.Right)
-            Canvas.DrawString(value, x - 500, y, 500, 500, HorizontalAlignment.Right, VerticalAlignment.Top);
-        else if (align == (TextAlignement.Left | TextAlignement.Bottom))
-            Canvas.DrawString(value, x, y - 50, 500, 50, HorizontalAlignment.Left, VerticalAlignment.Bottom);
-        else if (align == (TextAlignement.Center | TextAlignement.Bottom))
-            Canvas.DrawString(value, x - 250, y - 50, 500, 50, HorizontalAlignment.Center, VerticalAlignment.Bottom);
-        else if (align == (TextAlignement.Right | TextAlignement.Bottom))
-            Canvas.DrawString(value, x - 500, y - 50, 500, 50, HorizontalAlignment.Right, VerticalAlignment.Bottom);
-        else if (align == (TextAlignement.Left | TextAlignement.Middle))
-            Canvas.DrawString(value, x, y - 25, 500, 50, HorizontalAlignment.Left, VerticalAlignment.Center);
-        else if (align == (TextAlignement.Center | TextAlignement.Middle))
-            Canvas.DrawString(value, x - 250, y - 25, 500, 50, HorizontalAlignment.Center, VerticalAlignment.Center);
-        else if (align == (TextAlignement.Right | TextAlignement.Middle))
-            Canvas.DrawString(value, x - 500, y - 25, 500, 50, HorizontalAlignment.Right, VerticalAlignment.Center);
-        else
-            throw new NotImplementedException();
     }
 
 
@@ -150,7 +125,7 @@ public class MauiCanvasDrawer : IDrawingContext
         Canvas.DrawPath(path);
     }
 
-    public void StrokeStyle(System.Drawing.Color color, float width = 1.0f)
+    public void StrokeStyle(System.Drawing.Color color, float width)
     {
         _strokeColor = new Color(color.R, color.G, color.B);
         _strokeWidth = width;
@@ -172,7 +147,7 @@ public class MauiCanvasDrawer : IDrawingContext
     }
     public void Rotate(float arg)
     {
-        Canvas.Rotate((arg * 180 / (float)Math.PI));
+        Canvas.Rotate(AxMath.Radian2Degree(arg));
     }
 
     public void Scale(float x, float y)
@@ -180,10 +155,9 @@ public class MauiCanvasDrawer : IDrawingContext
         Canvas.Scale(x, y);
     }
 
-    private TextVariant _fontVariant;
     private Microsoft.Maui.Graphics.Font _font;
     private float _fontSize;
-    public void FontStyle(string family, float size, TextVariant variant = TextVariant.None)
+    public void FontStyle(string family, float size, TextVariant variant)
     {
         var weight = 400;
         var style = FontStyleType.Normal;
@@ -191,7 +165,6 @@ public class MauiCanvasDrawer : IDrawingContext
         
         _font = new Microsoft.Maui.Graphics.Font(family, weight, style);
         _fontSize = size;
-        _fontVariant = variant;
         Canvas.Font = _font;
         Canvas.FontSize = _fontSize;
     }

@@ -19,18 +19,21 @@ public struct Vec2
 {
     public Vec2()
     {
-        X = 0; Y = 0;
+        X = 0;
+        Y = 0;
     }
     public Vec2(double x, double y)
     {
-        X = x; Y = y;
+        X = x;
+        Y = y;
     }
     public double X { get; set; }
     public double Y { get; set; }
 
     public double LengthSq => X * X + Y * Y;
     public double Length => Math.Sqrt(X * X + Y * Y);
-    public Vec2 Norm(double radius = 1.0)
+    public Vec2 Norm() => Norm(1);
+    public Vec2 Norm(double radius)
     {
         if (LengthSq == 0)
             return new Vec2();
@@ -61,6 +64,10 @@ public struct Vec2
     public Vec2 Sub(Vec2 o) => new Vec2(X - o.X, Y - o.Y);
     public Vec2 Mul(double k) => new Vec2(X * k, Y * k);
     public Vec2 Div(double k) => new Vec2(X / k, Y / k);
+    public Vec2 Subtract(Vec2 o) => Sub(o);
+    public Vec2 Multiply(float k) => Mul(k);
+    public Vec2 Divide(float k) => Div(k);
+    public Vec2 Negate() => new Vec2(-X, -Y);
     public int CompareTo(double k) => LengthSq.CompareTo(k * k);
 
     
@@ -77,7 +84,7 @@ public struct Vec2
 
     public string ToIntString => $"{X:0} {Y:0}";
 
-    public override string ToString() => $"{X:0.0} {Y:0.0}";
+    public override string ToString() => FormattableString.Invariant($"{X:0.0} {Y:0.0}");
 
     public Vec2 XYSwap() => new Vec2(Y, X);
 
@@ -110,7 +117,7 @@ public struct Vec2
     }
     public static Vec2 FromAngleAndLength(double angle, double radius)
     {
-        var arg = angle * Math.PI / 180;
+        var arg = AxMath.Degree2Radian(angle);
         return new Vec2(radius * Math.Cos(arg), radius * Math.Sin(arg));
     }
     public static Vec2 FromArgAndLength(double arg, double radius)
@@ -124,7 +131,7 @@ public struct Vec2
     public Vec2 Ceiling() => new Vec2(Math.Ceiling(X), Math.Ceiling(Y));
 
     public Vec2 Rotate(double arg) => new Vec2(Math.Cos(arg) * X - Math.Sin(arg) * Y, Math.Sin(arg) * X + Math.Cos(arg) * Y);
-    public Vec2 RotateAngle(double angle) => Rotate(angle * Math.PI / 180);
+    public Vec2 RotateAngle(double angle) => Rotate(AxMath.Degree2Radian(angle));
 
     public static double DotProduct(Vec2 v1, Vec2 v2) => v1.X * v2.X + v1.Y * v2.Y;
 

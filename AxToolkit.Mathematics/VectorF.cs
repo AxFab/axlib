@@ -57,6 +57,10 @@ public struct VectorF : IEquatable<VectorF>
     public VectorF Sub(VectorF o) => new VectorF(X - o.X, Y - o.Y, Z - o.Z);
     public VectorF Mul(float k) => new VectorF(X * k, Y * k, Z * k);
     public VectorF Div(float k) => new VectorF(X / k, Y / k, Z / k);
+    public VectorF Subtract(VectorF o) => Sub(o);
+    public VectorF Multiply(float k) => Mul(k);
+    public VectorF Divide(float k) => Div(k);
+    public VectorF Negate() => new VectorF(-X, -Y, -Z);
     public int CompareTo(float k) => LengthSq.CompareTo(k * k);
 
 
@@ -111,8 +115,7 @@ public struct VectorF : IEquatable<VectorF>
         return new VectorF(c * X - s * Y, s * X + c * Y, Z);
     }
 
-    private const string FormatString = "0.000";
-    public override string ToString() => $"[X:{X.ToString(FormatString, CultureInfo.InvariantCulture)}, Y:{Y.ToString(FormatString, CultureInfo.InvariantCulture)}, Z:{Z.ToString(FormatString, CultureInfo.InvariantCulture)}]";
+    public override string ToString() => FormattableString.Invariant($"[X:{X:0.000}, Y:{Y:0.000}, Z:{Z:0.000}]");
 
     public VectorF MulNum(VectorF v)
         => new VectorF(X * v.X, Y * v.Y, Z * v.Z);

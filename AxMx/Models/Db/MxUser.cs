@@ -18,6 +18,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace AxMx.Models.Db;
 
+[Serializable]
 public class MxUser : MxAddress
 {
     [BsonId]

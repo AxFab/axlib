@@ -15,6 +15,7 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace AxToolkit.Network;
@@ -65,13 +66,12 @@ public class SmtpEHLOCommand : ISmtpCommand
         await smtp.WriteLine($"250-SIZE {smtp.Server.MaxMessageSize}");
         if (smtp.Certificate != null)
             await smtp.WriteLine($"250-STARTTLS");
-        // await smtp.WriteLine($"250-DSN");
-        // await smtp.WriteLine($"250-HELP");
         await smtp.WriteLine($"250-8BITMIME");
         await smtp.WriteLine($"250-BINARYMIME");
         await smtp.WriteLine($"250-CHUNKING");
         await smtp.WriteLine($"250-AUTH LOGIN CRAM-MD5");
         await smtp.WriteLine($"250 OK");
+        // TODO -- Add optionaly, DSN or HELP
         return true;
     }
 }
@@ -99,6 +99,28 @@ public class SmtpMAILCommand : ISmtpCommand
             C: MAIL FROM:<ned@thor.innosoft.com> SIZE=500000 BODY=8BITMIME
     */
     public string Command => "MAIL";
+
+    private async Task<TransferEncoding> ReadTransferEncoding(SmtpSession smtp, string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            await smtp.WriteLine("501 BODY parameter value isn't specified. Syntax:{MAIL FROM:<address> [SIZE=msgSize] [BODY=8BITMIME]}");
+            return TransferEncoding.Unknown;
+        }
+        value = value.ToUpperInvariant();
+        if (value == "7BIT")
+            return TransferEncoding.SevenBit;
+        else if (value == "8BITMIME")
+            return TransferEncoding.EightBit;
+        else if (value == "BINARYMIME")
+            return TransferEncoding.Base64;
+        else
+        {
+            await smtp.WriteLine("501 BODY parameter value is invalid. Syntax:{MAIL FROM:<address> [BODY=(7BIT/8BITMIME)]}");
+            return TransferEncoding.Unknown;
+        }
+    }
+
     public async Task<bool> Exec(SmtpSession smtp, string argsText)
     {
         if (!smtp.Ready)
@@ -136,26 +158,9 @@ public class SmtpMAILCommand : ISmtpCommand
                     break;
 
                 case "BODY":
-                    if (string.IsNullOrEmpty(parameter.Value))
-                    {
-                        await smtp.WriteLine("501 BODY parameter value isn't specified. Syntax:{MAIL FROM:<address> [SIZE=msgSize] [BODY=8BITMIME]}");
+                    transfertEncoding = await ReadTransferEncoding(smtp, parameter.Value);
+                    if (transfertEncoding == TransferEncoding.Unknown)
                         return false;
-                    }
-                    switch (parameter.Value.ToUpper())
-                    {
-                        case "7BIT":
-                            transfertEncoding = TransferEncoding.SevenBit;
-                            break;
-                        case "8BITMIME":
-                            transfertEncoding = TransferEncoding.EightBit;
-                            break;
-                        case "BINARYMIME":
-                            transfertEncoding = TransferEncoding.Base64;
-                            break;
-                        default:
-                            await smtp.WriteLine("501 BODY parameter value is invalid. Syntax:{MAIL FROM:<address> [BODY=(7BIT/8BITMIME)]}");
-                            return false;
-                    }
                     break;
 
                 default:
@@ -212,7 +217,7 @@ public class SmtpRCPTCommand : ISmtpCommand
             RCPT TO:<userc@d.bar.org>
             RCPT TO:<userc@d.bar.org> SIZE=40000
 
-        RCPT TO:<forward-path> [ SP <rcpt-parameters> ] <CRLF>			
+        RCPT TO:<forward-path> [ SP <rcpt-parameters> ] <CRLF>
     */
 
     public string Command => "RCPT";
@@ -308,11 +313,8 @@ public class SmtpDATACommand : ISmtpCommand
 
         var data = new StringBuilder();
         var inErr = false;
-        for (; ; )
+        for (var line = await smtp.ReadLine(); line != "."; line = await smtp.ReadLine())
         {
-            var line = await smtp.ReadLine();
-            if (line == ".")
-                break;
             if (line.StartsWith(".."))
                 line = line.Substring(1);
 

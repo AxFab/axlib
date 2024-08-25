@@ -36,7 +36,6 @@ public class ShapeLoader
     }
     private static int SwapBE(int value)
     {
-        var a = (uint)value;
         var b = ((value >> 24) & 0xff) | ((value >> 8) & 0xff00)
             | ((value << 8) & 0xff0000) | ((value << 24) & 0xff000000);
         return (int)b;
@@ -53,17 +52,11 @@ public class ShapeLoader
         file.BaseStream.Seek(24, SeekOrigin.Begin);
 
         var fileLength = SwapBE(file.ReadInt32()); // BE
-        var fileVersion = file.ReadInt32(); // LE
+        file.ReadInt32(); // LE: fileVersion
         var shapeType = (SHPShapeType)file.ReadInt32(); // LE
 
-        var bbXmin = file.ReadDouble();
-        var bbYmin = file.ReadDouble();
-        var bbXmax = file.ReadDouble();
-        var bbYmax = file.ReadDouble();
-        var bbZmin = file.ReadDouble();
-        var bbZmax = file.ReadDouble();
-        var bbMmin = file.ReadDouble();
-        var bbMmax = file.ReadDouble();
+        for (int i = 0; i < 8; ++i)
+            file.ReadDouble(); // Xmin, Ymin, Xmax, Ymax, Zmin, Zmax, Mmin, Mmax
 
         var restData = fileLength - (file.BaseStream.Position / 2);
         var list = new List<PolyLine>();

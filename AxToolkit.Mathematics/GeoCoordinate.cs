@@ -28,17 +28,19 @@ public struct GeoCoordinate  : IEquatable<GeoCoordinate>
     public double Rolling { get; set; }
 
     public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth)
-        : this(bodyradius, altitude, latitude, longitude, azimuth, true) { }
+        : this(bodyradius, altitude, latitude, longitude, azimuth, 0) { }
+    public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth, double elevation)
+        : this(bodyradius, altitude, latitude, longitude, azimuth, elevation, 0) { }
 
-    public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth, bool rising)
+    public GeoCoordinate(double bodyradius, double altitude, double latitude, double longitude, double azimuth, double elevation, double rolling)
     {
         BodyRadius = bodyradius;
         Altitude = altitude;
         Latitude = latitude;
         Longitude = longitude;
         Azimuth = azimuth;
-        Elevation = rising ?  90 : 0;
-        Rolling = 0;
+        Elevation = elevation;
+        Rolling = rolling;
     }
 
     [JsonIgnore]

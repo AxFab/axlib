@@ -125,6 +125,26 @@ public class HttpMessage
         // TODO -- if (request.BodyContent.Length < contentLength)
         return true;
     }
+
+    private static bool ReadBody(Stream stream, HttpMessage request)
+    {
+        var haveLength = request.Headers.TryGetValue("Content-Length", out var lengthStr);
+        var haveEncoding = request.Headers.TryGetValue("Transfer-Encoding", out var bodyEnc);
+        if (haveLength && int.TryParse(lengthStr, out var contentLength))
+        {
+            request.BodyContent = NetTools.ReadData(stream, contentLength);
+            // TODO -- if (request.BodyContent.Length < contentLength)
+            return true;
+        }
+        else if (haveEncoding && bodyEnc == "chunked")
+        {
+             return ReadChunkedBody(stream, request);
+        }
+        else
+        {
+            return false;
+        }
+    }
     private static bool ReadChunkedBody(Stream stream, HttpMessage request)
     {
         request.ChunkedBody = new List<byte[]>();
@@ -162,24 +182,10 @@ public class HttpMessage
             return null;
 
         // Read HTTP Body
-        if (request.Headers.TryGetValue("Content-Length", out var lengthStr) && int.TryParse(lengthStr, out var contentLength))
-        {
-            if (!ReadBody(stream, request, contentLength))
-                return null;
-        }
-        else if (request.Headers.TryGetValue("Transfer-Encoding", out var bodyEnc))
-        {
-            if (bodyEnc == "chunked")
-            {
-                if (!ReadChunkedBody(stream, request))
-                    return null;
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-        
+        if (!ReadBody(stream, request))
+            return null;
+
+        // Buidl URI in case of query
         if (request.Method != HttpMethod.None)
         {
             var hostname = request.Headers.TryGetValue("Host", out var host) ? host : "localhost";

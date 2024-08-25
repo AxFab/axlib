@@ -31,7 +31,7 @@ public struct Quaternion : IEquatable<Quaternion>
         W = w;
     }
 
-    public Quaternion(Vector axis, double angleRad = 0)
+    public Quaternion(Vector axis, double angleRad)
     {
         var half = 0.5 * angleRad;
         axis = axis.Norm * Math.Sin(half);
@@ -128,7 +128,8 @@ public struct Quaternion : IEquatable<Quaternion>
         => new Quaternion(X + o.X, Y + o.Y, Z + o.Z, W + o.W);
     public Quaternion Sub(Quaternion o)
         => new Quaternion(X - o.X, Y - o.Y, Z - o.Z, W - o.W);
-
+    public Quaternion Subtract(Quaternion o) => Sub(o);
+    
     public static Quaternion operator +(Quaternion a, Quaternion b) => a.Add(b);
     public static Quaternion operator -(Quaternion a, Quaternion b) => a.Sub(b);
 
@@ -156,7 +157,6 @@ public struct Quaternion : IEquatable<Quaternion>
 
     public Vector Vector => new Vector(X, Y, Z);
 
-    private const string FormatString = "0.000";
 
     public static bool operator ==(Quaternion a, Quaternion b)
         => a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.W == b.W;
@@ -171,7 +171,6 @@ public struct Quaternion : IEquatable<Quaternion>
         {
             if (Math.Abs(W) > 1)
                 return Norm.Axis; // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
-            var angle = 2 * Math.Acos(W);
             double s = Math.Sqrt(1 - W * W); // assuming quaternion normalised then w is less than 1, so term always positive.
             if (s < 1e-9) // avoid divide by zero, if s close to zero, then direction of axis not important
                 return new Vector(1, 0, 0);
@@ -210,7 +209,8 @@ public struct Quaternion : IEquatable<Quaternion>
             return false;
         return this == v;
     }
-    public override string ToString() => $"[X:{X.ToString(FormatString, CultureInfo.InvariantCulture)}, Y:{Y.ToString(FormatString, CultureInfo.InvariantCulture)}, Z:{Z.ToString(FormatString, CultureInfo.InvariantCulture)}, W:{W.ToString(FormatString, CultureInfo.InvariantCulture)}]";
+
+    public override string ToString() => FormattableString.Invariant($"[X:{X:0.000}, Y:{Y:0.000}, Z:{Z:0.000}, W:{W:0.000}]");
 
     public static Quaternion FromToRotation(Vector from, Vector to)
     {

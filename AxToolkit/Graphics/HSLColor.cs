@@ -1,4 +1,4 @@
-// This file is part of AxLib.
+﻿// This file is part of AxLib.
 // 
 // AxLib is free software: you can redistribute it and/or modify it under the
 // terms of the GNU General Public License as published by the Free Software 
@@ -13,9 +13,32 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-namespace AxMaui;
+using System.Drawing;
 
-// All the code in this file is only included on Tizen.
-public class PlatformClass1
+namespace AxToolkit.Graphics;
+
+public struct HSLColor : IEquatable<HSLColor>
 {
+    public float Hue { get; set; }
+    public float Saturation { get; set; }
+    public float Luminance { get; set; }
+
+    public static HSLColor FromColor(Color color)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Color AsColor
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public bool Equals(HSLColor other)
+        => AsColor.Equals(other.AsColor);
+
+    public static explicit operator Color(HSLColor hsl) => hsl.AsColor;
 }

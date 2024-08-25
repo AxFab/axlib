@@ -19,6 +19,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AxToolkit.Network;
@@ -35,7 +36,7 @@ public class SmtpSession
     {
         lock (_lock)
         {
-            var smtpTypes = Assembly.GetExecutingAssembly().GetTypes()
+            var smtpTypes = typeof(SmtpSession).Assembly.GetTypes()
                 .Where(x => x.IsAssignableTo(typeof(ISmtpCommand)) && x != typeof(ISmtpCommand)).ToArray();
             var smtpCommands = smtpTypes
                 .Select(x => (ISmtpCommand)Activator.CreateInstance(x)).ToArray();
@@ -55,7 +56,7 @@ public class SmtpSession
 
     public string Remote { get; set; } = "localhost";
     public SmtpServer Server { get; }
-    public bool Ready { get; private set; } = false;
+    public bool Ready { get; private set; };
     public MailAddress? Sender { get; set; }
     public List<MailAddress> Recipients { get; } = new List<MailAddress>();
     public TransferEncoding TransferEncoding { get; set; }
@@ -96,7 +97,7 @@ public class SmtpSession
     {
         await WriteLine("220 mail.axfab.com ESMTP");
         var badCommndCount = 0;
-        var cmdLog = string.Empty;
+        var cmdLog = new StringBuilder();
         try
         {
             for (; ; )
@@ -108,7 +109,7 @@ public class SmtpSession
 
                 bool knownCmd;
                 ISmtpCommand? cmd;
-                cmdLog += command + ",";
+                cmdLog.Append($"{command},");
                 lock (_lock)
                 {
                     knownCmd = _commands.TryGetValue(command, out cmd);

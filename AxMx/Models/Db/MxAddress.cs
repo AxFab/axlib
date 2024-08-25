@@ -17,6 +17,7 @@
 
 namespace AxMx.Models.Db;
 
+[Serializable]
 public class MxAddress
 {
     public string Display { get; set; }

@@ -143,13 +143,10 @@ public class MxProgram : SmtpServer
         }
 
         msg.Content = NetTools.ReadData(bodyStream, (int)(bodyStream.Length - bodyStream.Position));
-        if (headers.TryGetValue("Content-Transfer-Encoding", out var contentEncoding)) {
-            if (contentEncoding == "base64")
-            {
-                msg.Content = Convert.FromBase64String(Encoding.ASCII.GetString(msg.Content));
-            }
-        }
-
+        var haveEncoding = headers.TryGetValue("Content-Transfer-Encoding", out var contentEncoding);
+        if (haveEncoding && contentEncoding == "base64")
+            msg.Content = Convert.FromBase64String(Encoding.ASCII.GetString(msg.Content));
+        
         msg.HeaderKeys = headKey;
         msg.Parameters = new Dictionary<string, string>();
         foreach (var header in headers)

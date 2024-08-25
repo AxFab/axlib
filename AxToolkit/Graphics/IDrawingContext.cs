@@ -38,7 +38,8 @@ public interface IDrawingContext
 
     void Text(float x, float y, string value, TextAlignement align);
     void Text(float x, float y, string value) => Text(x, y, value, TextAlignement.Left);
-    void FontStyle(string family, float size, TextVariant variant = TextVariant.None);
+    void FontStyle(string family, float size) => FontStyle(family, size, TextVariant.None); 
+    void FontStyle(string family, float size, TextVariant variant);
 
     void StrokeStyle(Color color, float width);
     void StrokeStyle(Color color) => StrokeStyle(color, 1.0f);

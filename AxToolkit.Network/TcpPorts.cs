@@ -17,8 +17,8 @@ namespace AxToolkit.Network;
 
 public static class TcpPorts
 {
-    public const int HTTP = 80;
-    public const int HTTPS = 443;
-    public const int SMTP = 25;
+    public static int HTTP => 80;
+    public static int HTTPS => 443;
+    public static int SMTP => 25;
 
 }

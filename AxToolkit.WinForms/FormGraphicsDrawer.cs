@@ -22,7 +22,7 @@ using System.Runtime.Versioning;
 namespace AxToolkit.WinForms;
 
 [SupportedOSPlatform("windows6.1")]
-public class FormGraphicsDrawer : IDrawingContext
+public class FormGraphicsDrawer : IDrawingContext, IDisposable
 {
     private readonly System.Drawing.Graphics _graphics;
     private readonly Stack<GraphicsState> _saveStack = new Stack<GraphicsState>();
@@ -30,6 +30,7 @@ public class FormGraphicsDrawer : IDrawingContext
     private PointF _cursor;
     private string _fontFamily;
     private float _fontSize;
+    private bool _rectUseElipse = true;
     public FormGraphicsDrawer(System.Drawing.Graphics graphics, float x, float y, float width, float height)
     {
         _graphics = graphics;
@@ -100,23 +101,35 @@ public class FormGraphicsDrawer : IDrawingContext
         rx = Math.Max(0, Math.Min(rx, width / 2));
         ry = Math.Max(0, Math.Min(ry, height / 2));
         bool rounded = rx != 0 && ry != 0;
-        bool useElipse = true;
         BeginPath();
         MoveTo(x + rx, y);
         LineTo(x + width - rx, y);
-        if (rounded && useElipse)
-            Elipse(x + width - rx, y + ry, rx, ry, -(float)Math.PI / 2, 0);
+        if (rounded && _rectUseElipse)
+        {
+            Elipse(x + width - rx, y + ry, rx, ry, (float)-AxMath.HalfPI, 0);
+            LineTo(x + width, y + height - ry);
+            Elipse(x + width - rx, y + height - ry, rx, ry, 0, (float)AxMath.HalfPI);
+            LineTo(x + rx, y + height);
+            Elipse(x + rx, y + height - ry, rx, ry, (float)AxMath.HalfPI, (float)Math.PI);
+            LineTo(x, y + ry);
+            Elipse(x + rx, y + ry, rx, ry, (float)-Math.PI, (float)-AxMath.HalfPI);
+        }
         else if (rounded)
+        {
             CurveTo(x + width - rx * T, y, x + width, y + ry * T, x + width, y + ry);
-        LineTo(x + width, y + height - ry);
-        if (rounded)
+            LineTo(x + width, y + height - ry);
             CurveTo(x + width, y + height - ry * T, x + width - rx * T, y + height, x + width - rx, y + height);
-        LineTo(x + rx, y + height);
-        if (rounded)
+            LineTo(x + rx, y + height);
             CurveTo(x + rx * T, y + height, x, y + height - ry * T, x, y + height - ry);
-        LineTo(x, y + ry);
-        if (rounded)
+            LineTo(x, y + ry);
             CurveTo(x, y + ry * T, x + rx * T, y, x + rx, y);
+        }
+        else
+        {
+            LineTo(x + width, y + height - ry);
+            LineTo(x + rx, y + height);
+            LineTo(x, y + ry);
+        }
         ClosePath();
     }
 
@@ -233,5 +246,15 @@ public class FormGraphicsDrawer : IDrawingContext
             Ascender = asize.Height,
             Descender = size.Height - asize.Height,
         };
+    }
+
+    public void Dispose()
+    {
+        if (_path != null)
+        {
+            _path.Dispose();
+            _path = null;
+        }
+
     }
 }

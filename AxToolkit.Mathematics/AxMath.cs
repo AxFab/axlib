@@ -18,10 +18,8 @@ namespace AxToolkit.Mathematics;
 public static class AxMath
 {
     private const double LogCompareDoubleEpsilon = -6.0;
-
-    public const double HalfPI = Math.PI / 2;
-
-    public const double TwoPI = Math.PI * 2;
+    public static double HalfPI => Math.PI / 2;
+    public static double TwoPI => Math.PI * 2;
 
 
     public static double Radian2Degree(double val) => val * 180 / Math.PI;

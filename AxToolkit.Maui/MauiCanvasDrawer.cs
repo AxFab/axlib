@@ -159,10 +159,9 @@ public class MauiCanvasDrawer : IDrawingContext
     private float _fontSize;
     public void FontStyle(string family, float size, TextVariant variant)
     {
-        var weight = 400;
-        var style = FontStyleType.Normal;
-        
-        
+        var weight = variant.HasFlag(TextVariant.Bold) ? 600 : 400;
+        var style = variant.HasFlag(TextVariant.Italic) ? FontStyleType.Italic : FontStyleType.Normal;
+
         _font = new Microsoft.Maui.Graphics.Font(family, weight, style);
         _fontSize = size;
         Canvas.Font = _font;

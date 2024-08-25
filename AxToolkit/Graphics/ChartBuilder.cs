@@ -93,7 +93,7 @@ public class ChartBuilder
         public float Tickness { get; set;  }
         public Func<IEnumerable<TLine>> Accessor { get; set; }
         public Func<TLine, (double, double)?> Function { get; set; }
-        public IEnumerator Enumerator() => Accessor().GetEnumerator();
+        public IEnumerator Enumerator() => Accessor().ToList().GetEnumerator();
         public (double, double)? Value(object item) => Function((TLine)item);
     }
 

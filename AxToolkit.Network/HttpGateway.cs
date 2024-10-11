@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+using System.Globalization;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 
@@ -40,6 +41,8 @@ public class HttpGateway : HttpServer<HttpGatewayContext>
             {
                 var port = _services[host];
                 session.Service = new TcpClient("localhost", port);
+                session.SrvStream = session.Service.GetStream();
+                // session.SrvStream = new TeeStream(session.SrvStream, $"./Logs/GW_{session.Id}_Sin.txt", $"./Logs/GW_{session.Id}_Sout.txt");
             }
             catch (Exception ex)
             {
@@ -47,8 +50,8 @@ public class HttpGateway : HttpServer<HttpGatewayContext>
             }
         }
 
-        request.Send(session.Service.GetStream());
-        var response = HttpMessage.Read(session.Service.GetStream());
+        request.Send(session.SrvStream);
+        var response = HttpMessage.Read(session.SrvStream);
         if (response == null)
             return null;
         response.KeepAlive = session.Service.Connected;
@@ -73,5 +76,18 @@ public class HttpGateway : HttpServer<HttpGatewayContext>
 
 public class HttpGatewayContext
 {
+    const string KeyDigits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public HttpGatewayContext()
+    {
+        var str = string.Empty;
+        while (str.Length < 7)
+            str += KeyDigits[Random.Shared.Next(str.Length)];
+        Id = str;
+    }
+
     public TcpClient Service { get; set; }
+    public Stream SrvStream { get; set; }
+
+    public string Id { get; set; } 
+
 }

@@ -17,8 +17,4 @@
     <ProjectReference Include="..\AxToolkit.Network\AxToolkit.Network.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Api\" />
-  </ItemGroup>
-
 </Project>

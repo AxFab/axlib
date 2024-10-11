@@ -38,4 +38,5 @@ public class MxMessage
     public Dictionary<string, string> Parameters { get; set; }
     public MxAddress SendUser { get; set; }
     public List<string> HeaderKeys { get; set; }
+    public bool IsRead { get; set; }
 }

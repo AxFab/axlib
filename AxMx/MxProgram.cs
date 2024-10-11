@@ -87,7 +87,7 @@ public class MxProgram : SmtpServer
             .Select(x => new MxAddress
             {
                 Display = x.DisplayName,
-                User = x.User,
+                Username = x.User,
                 Domain = x.Host,
             })
             .ToList();

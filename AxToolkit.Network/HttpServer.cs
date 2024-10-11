@@ -16,6 +16,7 @@
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
+using AxToolkit;
 
 namespace AxToolkit.Network;
 
@@ -41,8 +42,13 @@ public abstract class HttpServer<TContext> : TcpServer where TContext : class
             stream = sslStream;
         }
 
+        TContext context = NewSession(client, secured);
+        //if (context is HttpGatewayContext gw)
+        //{
+        //    stream = new TeeStream(stream, $"./Logs/GW_{gw.Id}_Cin.txt", $"./Logs/GW_{gw.Id}_Cout.txt");
+        //}
+
         bool keepConnected = true;
-        TContext context = null;
         while (keepConnected && client.Connected)
         {
             // Parse HTTP Request
@@ -51,7 +57,6 @@ public abstract class HttpServer<TContext> : TcpServer where TContext : class
                 return;
 
             // Handle request
-            context ??= NewSession(client, secured);
             var response = Handle(request, context);
             if (response == null)
                 return;

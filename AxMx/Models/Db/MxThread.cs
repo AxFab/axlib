@@ -25,14 +25,16 @@ namespace AxMx.Models.Db
         public ObjectId Id { get; set; }
         public Guid ThreadId { get; set; }
         public string Subject { get; set; }
+        public long OrderStamp { get; set; }
         public List<Guid> Messages { get; set; } = new List<Guid>();
         public List<MxAddress> Actors { get; set; } = new List<MxAddress>();
         public List<string> Labels { get; set; } = new List<string>();
         public DateTime LastUpdate { get; internal set; }
+        public bool IsRead { get; set; }
 
         public void AddActor(MxAddress actor)
         {
-            if (!Actors.Any(x => x.Domain == actor.Domain && x.User == actor.User))
+            if (!Actors.Any(x => x.Domain == actor.Domain && x.Username == actor.Username))
                 Actors.Add(actor);
         }
         public void AddActors(IEnumerable<MxAddress> actors)

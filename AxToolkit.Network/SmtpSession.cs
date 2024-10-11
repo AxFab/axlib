@@ -56,7 +56,7 @@ public class SmtpSession
 
     public string Remote { get; set; } = "localhost";
     public SmtpServer Server { get; }
-    public bool Ready { get; private set; };
+    public bool Ready { get; private set; }
     public MailAddress? Sender { get; set; }
     public List<MailAddress> Recipients { get; } = new List<MailAddress>();
     public TransferEncoding TransferEncoding { get; set; }

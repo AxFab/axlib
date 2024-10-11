@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License along 
 // with AxLib. If not, see <https://www.gnu.org/licenses/>.
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
 
@@ -45,6 +46,9 @@ public abstract class TcpServer
             var client = server.AcceptTcpClient();
             _ = Task.Run(() =>
             {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
                 try
                 {
                     Handle(client, secured);

@@ -142,7 +142,7 @@ public class HttpMessage
         }
         else
         {
-            return false;
+            return true;
         }
     }
     private static bool ReadChunkedBody(Stream stream, HttpMessage request)

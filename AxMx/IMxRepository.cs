@@ -25,6 +25,7 @@ namespace AxMx
 
     public interface IMxRepository : IBaseRepository<MxMessage>, IBaseRepository<MxThread>, IBaseRepository<MxUser>
     {
+        public object WriteLock { get; }
         Task NewUser(string display, string user, string domain, string[] langs);
         Task<MxUser> SearchUser(string user, string domain);
         Task<MxThread> SearchThread(Guid? uid, string subject);

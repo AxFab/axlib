@@ -21,16 +21,16 @@ namespace AxMx.Models.Db;
 public class MxAddress
 {
     public string Display { get; set; }
-    public string User { get; set; }
+    public string Username { get; set; }
     public string Domain { get; set; }
-    public string Address => $"{User}@{Domain}";
-    public string FullString => $"{Display} <{User}@{Domain}>";
+    public string Address => $"{Username}@{Domain}";
+    public string FullString => string.IsNullOrEmpty(Display) ? $"{Username}@{Domain}" : $"{Display} <{Username}@{Domain}>";
 
     public static MxAddress Map(MailAddress src)
     {
         return new MxAddress
         {
-            User = src.User,
+            Username = src.User,
             Domain = src.Host,
             Display = src.DisplayName,
         };

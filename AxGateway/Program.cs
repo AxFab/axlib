@@ -16,6 +16,7 @@
 using AxToolkit.Network;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Globalization;
 
 namespace AxGateway;
 
@@ -29,6 +30,8 @@ public class Program : HttpGateway
 
     public static void Main(string[] args)
     {
+        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+        Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
         var gateway = new Program();
         
         var lines = File.ReadAllLines("gateway.config")

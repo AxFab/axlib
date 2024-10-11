@@ -23,6 +23,7 @@ namespace AxMx
         private IMongoCollection<MxMessage> _messages;
         private IMongoCollection<MxThread> _threads;
         private IMongoCollection<MxUser> _users;
+        private IMongoCollection<MxAddressBook> _books;
         private IMongoDatabase _database;
 
         public MxRepository()
@@ -37,12 +38,14 @@ namespace AxMx
             _messages = null;
             _threads = null;
             _users = null;
+            _books = null;
         }
 
 
         protected IMongoCollection<MxMessage> Messages => _messages ??= _database.GetCollection<MxMessage>("Messages");
         protected IMongoCollection<MxThread> Threads => _threads ??= _database.GetCollection<MxThread>("Threads");
         protected IMongoCollection<MxUser> Users => _users ??= _database.GetCollection<MxUser>("Users");
+        protected IMongoCollection<MxAddressBook> Books => _books ??= _database.GetCollection<MxAddressBook>("Books");
 
         // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -79,7 +82,7 @@ namespace AxMx
             user = user.Trim();
             domain = domain.Trim();
             langs = langs.Where(x => x != null && IsValidLang(x)).ToArray();
-            var isUserExist = (await Users.FindAsync(x => x.Domain == domain && x.User == user, new FindOptions<MxUser, MxUser>
+            var isUserExist = (await Users.FindAsync(x => x.Domain == domain && x.Username == user, new FindOptions<MxUser, MxUser>
             {
                 Limit = 1,
             })).Any();
@@ -90,7 +93,7 @@ namespace AxMx
                 Created = DateTime.UtcNow,
                 Display = display,
                 Domain = domain,
-                User = user,
+                Username = user,
                 Languages = langs.ToList(),
                 LastConnection = DateTime.UtcNow,
             });
@@ -100,7 +103,7 @@ namespace AxMx
         {
             user = user.Trim();
             domain = domain.Trim();
-            var list = await Users.Find(x => x.Domain == domain && x.User == user).Limit(2).ToListAsync();
+            var list = await Users.Find(x => x.Domain == domain && x.Username == user).Limit(2).ToListAsync();
             if (list.Count == 0)
                 return null;
             if (list.Count > 1)

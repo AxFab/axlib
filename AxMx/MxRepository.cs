@@ -31,6 +31,8 @@ namespace AxMx
             Reset();
         }
 
+        public object WriteLock { get; } = new object();
+
         public void Reset()
         {
             var mongoClient = new MongoClient("mongodb://localhost:27017");
